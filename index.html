@@ -944,63 +944,69 @@ function drawTile(tx,ty){
   const ts=IMGS.tileset;
   const ok=(ts&&ts.complete&&ts.naturalWidth>0);
 
+  // Helper: draw a source 16x16 tile at display position
+  function dt(sx,sy){
+    if(ok) ctx.drawImage(ts,sx,sy,16,16,x,y,TS,TS);
+  }
+
   if(t===0){
-    // Plain grass - use tile at (16,16) which is center grass
-    if(ok) ctx.drawImage(ts,16,16,16,16,x,y,TS,TS);
-    else{ctx.fillStyle='#78C850';ctx.fillRect(x,y,TS,TS);}
+    // Grass - verified at (16,48)
+    if(ok) ctx.drawImage(ts,16,48,16,16,x,y,TS,TS);
+    else{ctx.fillStyle='#63C940';ctx.fillRect(x,y,TS,TS);}
   }
   else if(t===1){
-    // Water - use water tile, animate between two frames
-    const wf=Math.floor(Date.now()/600)%2;
-    if(ok) ctx.drawImage(ts,160+wf*16,320,16,16,x,y,TS,TS);
-    else{ctx.fillStyle='#4EA8DE';ctx.fillRect(x,y,TS,TS);}
+    // Water - verified at (256,160), animate with (288,160)
+    const wf=Math.floor(Date.now()/700)%2;
+    if(ok) ctx.drawImage(ts,256+wf*32,160,16,16,x,y,TS,TS);
+    else{ctx.fillStyle='#1DB4CE';ctx.fillRect(x,y,TS,TS);}
   }
   else if(t===3){
-    // Flower: grass + flower overlay
+    // Grass + small flower decoration
     if(ok){
-      ctx.drawImage(ts,16,16,16,16,x,y,TS,TS);
-      const fc=[[544,160],[560,160],[544,176],[560,176]];
-      const [fx2,fy2]=fc[(tx+ty)%4];
-      ctx.drawImage(ts,fx2,fy2,16,16,x,y,TS,TS);
+      ctx.drawImage(ts,16,48,16,16,x,y,TS,TS);
+      // Use grass variants as flower-ish decoration
+      const gv=[[32,48],[48,48],[64,48],[80,48]];
+      const [gx,gy]=gv[(tx*3+ty*7)%4];
+      ctx.drawImage(ts,gx,gy,16,16,x,y,TS,TS);
     } else {
-      ctx.fillStyle='#78C850';ctx.fillRect(x,y,TS,TS);
-      ctx.fillStyle=['#FF9EC4','#FFD166','#FF6B9D','#A8E6CF'][(tx+ty)%4];
+      ctx.fillStyle='#63C940';ctx.fillRect(x,y,TS,TS);
+      ctx.fillStyle='#FFD166';
       ctx.beginPath();ctx.arc(x+TS/2,y+TS/2,4,0,Math.PI*2);ctx.fill();
     }
   }
   else if(t===4){
-    // Tree: grass base + tree sprite centered on tile
+    // Tree: grass base + large round tree from top-right (880,48 area = dense green)
+    // Tree center is around (896,56) in tileset — use 48x48 crop
     if(ok){
-      ctx.drawImage(ts,16,16,16,16,x,y,TS,TS);
-      // Large tree is 32x32 source at top-right of tileset
-      ctx.drawImage(ts,672,0,32,32,x-TS/2,y-TS,TS*2,TS*2);
+      ctx.drawImage(ts,16,48,16,16,x,y,TS,TS);
+      // Draw 48x48 tree centered on tile (goes above and to sides)
+      ctx.drawImage(ts,864,0,48,64,x-TS/2,y-TS,TS*2.5|0,TS*2.5|0);
     } else {
-      ctx.fillStyle='#5AAB52';ctx.fillRect(x,y,TS,TS);
+      ctx.fillStyle='#63C940';ctx.fillRect(x,y,TS,TS);
       ctx.fillStyle='#8B5E3C';ctx.fillRect(x+TS/2-4,y+TS/2,8,TS/2);
       ctx.fillStyle='#2D8B3A';ctx.beginPath();ctx.arc(x+TS/2,y+TS/3,TS/3,0,Math.PI*2);ctx.fill();
     }
   }
   else if(t===5){
-    // House: grass base, draw house only from top-left corner of each 3x3 block
+    // House: draw grass, then house sprite from top-left of 3x3 block
     if(ok){
-      ctx.drawImage(ts,16,16,16,16,x,y,TS,TS);
+      ctx.drawImage(ts,16,48,16,16,x,y,TS,TS);
       let htx=tx,hty=ty;
       while(htx>0&&MAP[hty][htx-1]===5)htx--;
       while(hty>0&&MAP[hty-1][htx]===5)hty--;
       if(htx===tx&&hty===ty){
-        // Draw house roof (48x32 source) stretched over 3x2 tiles
-        ctx.drawImage(ts,256,32,48,32,x,y,TS*3,TS*2);
-        ctx.drawImage(ts,256,64,48,32,x,y+TS*2,TS*3,TS*2);
+        // House in tileset: green-roof house top at (256,32) 48x64
+        ctx.drawImage(ts,256,32,48,64,x,y-TS/2,TS*3,TS*4);
       }
     } else {
-      ctx.fillStyle='#78C850';ctx.fillRect(x,y,TS,TS);
-      ctx.fillStyle='#FFF0F5';ctx.fillRect(x+2,y+8,TS-4,TS-8);
-      ctx.fillStyle='#FF9EC4';ctx.fillRect(x,y,TS,8);
+      ctx.fillStyle='#63C940';ctx.fillRect(x,y,TS,TS);
+      ctx.fillStyle='#FFF0F5';ctx.fillRect(x+2,y+4,TS-4,TS-4);
+      ctx.fillStyle='#FF9EC4';ctx.fillRect(x,y,TS,6);
     }
   }
   else if(t===6){
-    // Path/dirt
-    if(ok) ctx.drawImage(ts,96,480,16,16,x,y,TS,TS);
+    // Path - verified sandy dirt at (96,544)
+    if(ok) ctx.drawImage(ts,96,544,16,16,x,y,TS,TS);
     else{ctx.fillStyle='#D4A870';ctx.fillRect(x,y,TS,TS);}
   }
 }
