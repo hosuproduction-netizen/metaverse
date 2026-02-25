@@ -450,8 +450,10 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nanum Gothic',sans
 // ═══════════════════════════════════
 const DB_URL = 'https://ourmetaverse-default-rtdb.firebaseio.com';
 
-// ─── Sunnyside GitHub Assets ───────────────────────────────
-const GH = './';
+// ─── GitHub Raw URLs for sprites (CORS-safe) ───
+const GH_RAW = 'https://raw.githubusercontent.com/hosuproduction-netizen/metaverse/main/';
+// Also try relative path as fallback
+const GH_REL = './';
 
 const PALETTES = [
   {name:'단발',  body:'#E63946', hair:'shorthair',  label:'🟥'},
@@ -462,28 +464,78 @@ const PALETTES = [
   {name:'뾰족',  body:'#F72585', hair:'spikeyhair', label:'🩷'},
 ];
 
-// ─── Image loader ───────────────────────────────────────────
+// ─── Image loader (with fallback URL) ────────────────────
 const IMGS = {};
 let imgsLoaded = 0, imgsTotal = 0, imgsReady = false;
-function loadImg(key, url){
+let canUseGetImageData = true; // will be tested once
+
+function loadImg(key, primaryUrl, fallbackUrl){
   imgsTotal++;
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.onload  = ()=>{ imgsLoaded++; checkReady(); };
-  img.onerror = ()=>{ imgsLoaded++; checkReady(); console.warn('⚠ 로드 실패:', url); };
-  img.src = url;
+  img.onerror = ()=>{
+    // Try fallback URL if primary fails
+    if(fallbackUrl && img.src !== fallbackUrl){
+      console.log('⚠ Primary failed, trying fallback:', fallbackUrl);
+      img.src = fallbackUrl;
+    } else {
+      imgsLoaded++; checkReady();
+      console.warn('⚠ 이미지 로드 실패:', primaryUrl);
+    }
+  };
+  img.src = primaryUrl;
   IMGS[key] = img;
 }
 function checkReady(){
-  if(imgsLoaded >= imgsTotal){ imgsReady = true; }
+  if(imgsLoaded >= imgsTotal){
+    imgsReady = true;
+    // Test if getImageData works (CORS check)
+    testGetImageData();
+  }
 }
+
+function testGetImageData(){
+  // Test with the base sprite to see if pixel manipulation is allowed
+  const testImg = IMGS['base'];
+  if(!testImg || !testImg.complete || !testImg.naturalWidth) {
+    canUseGetImageData = false;
+    return;
+  }
+  try {
+    const tc = document.createElement('canvas');
+    tc.width = 4; tc.height = 4;
+    const tx = tc.getContext('2d');
+    tx.drawImage(testImg, 0, 0, 4, 4, 0, 0, 4, 4);
+    tx.getImageData(0, 0, 4, 4); // This will throw if CORS-tainted
+    canUseGetImageData = true;
+    console.log('✅ getImageData 사용 가능 (CORS OK)');
+  } catch(e) {
+    canUseGetImageData = false;
+    console.warn('⚠ getImageData 사용 불가 (CORS) - 대체 렌더링 사용');
+  }
+}
+
 function preloadAssets(){
-  loadImg('tileset', GH+'spr_tileset_sunnysideworld_16px.png');
-  loadImg('base',    GH+'base_walk_strip8.png');
+  // Load tileset - try relative first, then raw GitHub
+  loadImg('tileset',
+    GH_REL+'spr_tileset_sunnysideworld_16px.png',
+    GH_RAW+'spr_tileset_sunnysideworld_16px.png'
+  );
+  // Load base character
+  loadImg('base',
+    GH_REL+'base_walk_strip8.png',
+    GH_RAW+'base_walk_strip8.png'
+  );
+  // Load hair variants
   ['shorthair','longhair','bowlhair','curlyhair','mophair','spikeyhair'].forEach(h=>{
-    loadImg('hair_'+h, GH+h+'_walk_strip8.png');
+    loadImg('hair_'+h,
+      GH_REL+h+'_walk_strip8.png',
+      GH_RAW+h+'_walk_strip8.png'
+    );
   });
 }
+
 const EMOTES = ['♥','★','♪','!','?','🌸'];
 const STICKERS = ['🌸','💕','⭐','🎀','🍀','🌈','🎉','💫','🦋','🌷'];
 
@@ -546,7 +598,6 @@ async function fbDelete(p){try{await fetch(DB_URL+p+'.json',{method:'DELETE'});}
   });
   document.getElementById('name-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.target.blur();startGame();}});
 
-  // 저장된 이름·색상 불러오기
   const savedName=localStorage.getItem('fam_name');
   const savedPal=parseInt(localStorage.getItem('fam_pal')||'0');
   if(savedName){document.getElementById('name-input').value=savedName;}
@@ -562,7 +613,6 @@ function startGame(){
   const n=document.getElementById('name-input').value.trim();
   if(!n)return;
   myName=n.slice(0,6); myPal=PALETTES[selPalIdx];
-  // 이름·색상 저장
   localStorage.setItem('fam_name',myName);
   localStorage.setItem('fam_pal',String(selPalIdx));
   document.getElementById('login-screen').style.display='none';
@@ -573,10 +623,8 @@ function startGame(){
   const canvas=document.getElementById('game-canvas');
   canvas.width=W; canvas.height=H;
   ctx=canvas.getContext('2d'); ctx.imageSmoothingEnabled=false;
-  // Load Sunnyside sprites
   preloadAssets();
 
-  // emote buttons
   const eb=document.getElementById('emote-bar'); eb.innerHTML='';
   EMOTES.forEach(e=>{
     const b=document.createElement('button'); b.className='emote-fab'; b.textContent=e;
@@ -584,7 +632,6 @@ function startGame(){
     eb.appendChild(b);
   });
 
-  // sticker grid
   const sg=document.getElementById('sticker-grid'); sg.innerHTML='';
   STICKERS.forEach(s=>{
     const d=document.createElement('div');
@@ -594,20 +641,14 @@ function startGame(){
     sg.appendChild(d);
   });
 
-  // photo upload
   document.getElementById('photo-file-input').addEventListener('change', handlePhotoSelect);
 
-  // keyboard
   window.addEventListener('keydown',e=>{keys[e.code]=true;['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)&&e.preventDefault();});
   window.addEventListener('keyup',e=>{keys[e.code]=false;});
-
-  // chat enter
   document.getElementById('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.target.blur();doSendChat();}});
 
-  // joystick
   setupJoystick();
 
-  // swipe sheets
   document.querySelectorAll('.sheet').forEach(s=>{
     let sy=0;
     s.addEventListener('touchstart',e=>{sy=e.touches[0].clientY;},{passive:true});
@@ -719,7 +760,6 @@ async function loadPhotos(){
 async function handlePhotoSelect(e){
   const files=[...e.target.files]; if(!files.length)return;
   e.target.value='';
-  // compress first file and show caption modal
   const file=files[0];
   try{
     const compressed=await compressImage(file,600,0.72);
@@ -797,7 +837,6 @@ async function deleteCurrentPhoto(){
 async function doSendChat(){
   const inp=document.getElementById('chat-input');
   const txt=inp.value.trim(); if(!txt)return; inp.value='';
-  // show chat bubble in game
   myChatBubble=txt; myChatBubbleT=180;
   try{
     let msgs=await fbGet('/chat')||[];
@@ -805,7 +844,6 @@ async function doSendChat(){
     msgs.push({name:myName,color:myPal.body,text:txt,ts:Date.now(),pid:MY_ID});
     if(msgs.length>60)msgs=msgs.slice(-60);
     await fbSet('/chat',msgs);
-    // write bubble to player data
     await fbSet('/players/'+MY_ID+'/chatBubble',{text:txt,ts:Date.now()});
   }catch{}
 }
@@ -903,68 +941,37 @@ async function readAll(){
   const cnt=1+Object.keys(others).length;
   document.getElementById('online-count').textContent=cnt;
   document.getElementById('online-count2').textContent=cnt;
-  // online list
   const ol=document.getElementById('online-list');
   ol.innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#f9f9f9;border-radius:10px;"><div style="width:10px;height:10px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div><div style="font-size:13px;font-weight:700;">${esc(myName)} (나)</div></div>`;
   for(const id in others){const o=others[id];ol.innerHTML+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#f9f9f9;border-radius:10px;"><div style="width:10px;height:10px;border-radius:50%;background:${o.palette?.body||'#999'};flex-shrink:0;"></div><div style="font-size:13px;font-weight:700;">${esc(o.name)}</div></div>`;}
-  // chat
   const chat=await fbGet('/chat');
   if(chat){const msgs=Array.isArray(chat)?chat:Object.values(chat).filter(Boolean);renderChatLog(msgs);}
 }
 
 // ═══════════════════════════════════
-//  DRAW
+//  DRAW - TILES
 // ═══════════════════════════════════
-
-// ─── Tileset tile helper ────────────────────────────────────
-// Sunnyside 16px tileset: each tile = 16x16 in source
-// We draw them at TS x TS (32x32) display size
-function tsTile(dx,dy,sx,sy,sw,sh){
-  const img=IMGS.tileset;
-  if(!img||!img.complete||!img.naturalWidth) return false;
-  sw=sw||16; sh=sh||16;
-  ctx.drawImage(img, sx,sy,sw,sh, dx,dy, TS*(sw/16), TS*(sh/16));
-  return true;
-}
-
-// Ground tile type → tileset source coords (sx, sy)
-// Measured from actual Sunnyside 16px tileset (1024x1024)
-const TILE_SRC = {
-  grass:  {sx:16,  sy:16},   // plain green grass center
-  water:  {sx:160, sy:320},  // water blue
-  flower: {sx:544, sy:160},  // small flower
-  path:   {sx:96,  sy:480},  // sandy dirt path
-  tree:   {sx:672, sy:0,   sw:32, sh:32}, // large tree top-right
-  house_t:{sx:256, sy:32,  sw:48, sh:32},
-  house_b:{sx:256, sy:64,  sw:48, sh:32},
-};
-
 function drawTile(tx,ty){
   const x=tx*TS, y=ty*TS, t=MAP[ty][tx];
   const ts=IMGS.tileset;
   const ok=(ts&&ts.complete&&ts.naturalWidth>0);
 
-  // Helper: draw a source 16x16 tile at display position
   function dt(sx,sy){
     if(ok) ctx.drawImage(ts,sx,sy,16,16,x,y,TS,TS);
   }
 
   if(t===0){
-    // Grass - verified at (16,48)
     if(ok) ctx.drawImage(ts,16,48,16,16,x,y,TS,TS);
     else{ctx.fillStyle='#63C940';ctx.fillRect(x,y,TS,TS);}
   }
   else if(t===1){
-    // Water - verified at (256,160), animate with (288,160)
     const wf=Math.floor(Date.now()/700)%2;
     if(ok) ctx.drawImage(ts,192+wf*16,304,16,16,x,y,TS,TS);
     else{ctx.fillStyle='#1DB4CE';ctx.fillRect(x,y,TS,TS);}
   }
   else if(t===3){
-    // Grass + small flower decoration
     if(ok){
       ctx.drawImage(ts,16,48,16,16,x,y,TS,TS);
-      // Use grass variants as flower-ish decoration
       const gv=[[32,48],[48,48],[64,48],[80,48]];
       const [gx,gy]=gv[(tx*3+ty*7)%4];
       ctx.drawImage(ts,gx,gy,16,16,x,y,TS,TS);
@@ -975,11 +982,8 @@ function drawTile(tx,ty){
     }
   }
   else if(t===4){
-    // Tree: grass base + large round tree from top-right (880,48 area = dense green)
-    // Tree center is around (896,56) in tileset — use 48x48 crop
     if(ok){
       ctx.drawImage(ts,16,48,16,16,x,y,TS,TS);
-      // Draw 48x48 tree centered on tile (goes above and to sides)
       ctx.drawImage(ts,864,0,48,64,x-TS/2,y-TS,TS*2.5|0,TS*2.5|0);
     } else {
       ctx.fillStyle='#63C940';ctx.fillRect(x,y,TS,TS);
@@ -988,14 +992,12 @@ function drawTile(tx,ty){
     }
   }
   else if(t===5){
-    // House: draw grass, then house sprite from top-left of 3x3 block
     if(ok){
       ctx.drawImage(ts,16,48,16,16,x,y,TS,TS);
       let htx=tx,hty=ty;
       while(htx>0&&MAP[hty][htx-1]===5)htx--;
       while(hty>0&&MAP[hty-1][htx]===5)hty--;
       if(htx===tx&&hty===ty){
-        // House in tileset: green-roof house top at (256,32) 48x64
         ctx.drawImage(ts,256,32,48,64,x,y-TS/2,TS*3,TS*4);
       }
     } else {
@@ -1005,63 +1007,29 @@ function drawTile(tx,ty){
     }
   }
   else if(t===6){
-    // Path - verified sandy dirt at (96,544)
     if(ok) ctx.drawImage(ts,96,544,16,16,x,y,TS,TS);
     else{ctx.fillStyle='#D4A870';ctx.fillRect(x,y,TS,TS);}
   }
 }
 
-function drawChatBubble(sx,sy,text,color){
-  // measure text
-  ctx.save();
-  ctx.font='bold 11px "Nanum Gothic",sans-serif';
-  const maxW=90,padding=8;
-  // word wrap
-  const words=text.split('');
-  const lines=[];let line='';
-  for(const ch of words){if(ctx.measureText(line+ch).width>maxW-padding*2){if(line)lines.push(line);line=ch;}else line+=ch;}
-  if(line)lines.push(line);
-  const lineH=15,bw=Math.max(...lines.map(l=>ctx.measureText(l).width))+padding*2;
-  const bh=lines.length*lineH+padding*2+4;
-  const bx=Math.round(sx-bw/2);
-  const by=Math.round(sy-TS-bh-10);
+// ═══════════════════════════════════
+//  DRAW - CHARACTER SPRITES
+// ═══════════════════════════════════
 
-  // bubble background
-  ctx.fillStyle='rgba(255,255,255,0.95)';
-  // draw rounded rect manually (no roundRect in older browsers)
-  const r=8;
-  ctx.beginPath();
-  ctx.moveTo(bx+r,by);ctx.lineTo(bx+bw-r,by);ctx.quadraticCurveTo(bx+bw,by,bx+bw,by+r);
-  ctx.lineTo(bx+bw,by+bh-r);ctx.quadraticCurveTo(bx+bw,by+bh,bx+bw-r,by+bh);
-  ctx.lineTo(bx+bw/2+5,by+bh);ctx.lineTo(bx+bw/2,by+bh+6);ctx.lineTo(bx+bw/2-5,by+bh);
-  ctx.lineTo(bx+r,by+bh);ctx.quadraticCurveTo(bx,by+bh,bx,by+bh-r);
-  ctx.lineTo(bx,by+r);ctx.quadraticCurveTo(bx,by,bx+r,by);
-  ctx.closePath();
-  ctx.fill();
-  ctx.strokeStyle=color||'#FF9EC4';ctx.lineWidth=1.5;ctx.stroke();
-
-  // text
-  ctx.fillStyle='#333';
-  lines.forEach((l,i)=>{
-    ctx.fillText(l,bx+padding,by+padding+12+i*lineH);
-  });
-  ctx.restore();
-}
-
-// ─── Character sprite constants ────────────────────────────
-// Sunnyside strip: 8 frames side-by-side, each frame 48×48px
 const CF_W=48, CF_H=48, CF_N=8;
-// Display size (scale up to fit our tile grid)
-const CD_W=TS*1.5|0, CD_H=TS*2|0;   // 48×64 display px
+const CD_W=TS*1.5|0, CD_H=TS*2|0;
 
-// Offscreen canvas for black-key removal
+// Offscreen canvas for sprite processing
 const _oc = document.createElement('canvas');
 _oc.width=CF_W; _oc.height=CF_H;
 const _ox = _oc.getContext('2d');
 
+// ──── CORS-SAFE black background removal ────
+// Uses getImageData when possible, falls back to screen blend mode
 function removeBlackBg(img, fx, flipX){
   _oc.width=CF_W; _oc.height=CF_H;
   _ox.clearRect(0,0,CF_W,CF_H);
+
   if(flipX){
     _ox.save();
     _ox.translate(CF_W,0);
@@ -1069,16 +1037,27 @@ function removeBlackBg(img, fx, flipX){
   }
   _ox.drawImage(img, fx,0,CF_W,CF_H, 0,0,CF_W,CF_H);
   if(flipX) _ox.restore();
-  // Remove near-black pixels (background color)
-  const id = _ox.getImageData(0,0,CF_W,CF_H);
-  const d = id.data;
-  for(let i=0;i<d.length;i+=4){
-    if(d[i]<30 && d[i+1]<30 && d[i+2]<30) d[i+3]=0;
+
+  // Try pixel-level black removal (best quality)
+  if(canUseGetImageData){
+    try {
+      const id = _ox.getImageData(0,0,CF_W,CF_H);
+      const d = id.data;
+      for(let i=0;i<d.length;i+=4){
+        if(d[i]<30 && d[i+1]<30 && d[i+2]<30) d[i+3]=0;
+      }
+      _ox.putImageData(id,0,0);
+    } catch(e) {
+      // CORS blocked - mark as unavailable for future calls
+      canUseGetImageData = false;
+      console.warn('⚠ getImageData CORS 에러 - 대체 렌더링으로 전환');
+    }
   }
-  _ox.putImageData(id,0,0);
+
   return _oc;
 }
 
+// ──── Draw sprite character (with fallback) ────
 function drawSpriteChar(sx,sy,pal,dir,moving,t){
   const base = IMGS['base'];
   const hair = IMGS['hair_'+(pal.hair||'shorthair')];
@@ -1092,28 +1071,158 @@ function drawSpriteChar(sx,sy,pal,dir,moving,t){
   const dy = Math.round(sy - CD_H);
 
   ctx.save();
-  // Draw base body (black bg removed)
-  const baseCanvas = removeBlackBg(base, fx, flipX);
-  ctx.drawImage(baseCanvas, 0,0,CF_W,CF_H, dx,dy,CD_W,CD_H);
 
-  // Draw hair layer with color tint
-  if(hair&&hair.complete&&hair.naturalWidth){
-    const hairCanvas = removeBlackBg(hair, fx, flipX);
-    // Draw hair
-    ctx.drawImage(hairCanvas, 0,0,CF_W,CF_H, dx,dy,CD_W,CD_H);
-    // Tint hair with player color
-    ctx.globalCompositeOperation='multiply';
-    ctx.fillStyle=pal.body||'#E63946';
-    ctx.globalAlpha=0.6;
-    ctx.drawImage(hairCanvas, 0,0,CF_W,CF_H, dx,dy,CD_W,CD_H);
-    ctx.globalAlpha=1;
-    ctx.globalCompositeOperation='source-over';
+  if(canUseGetImageData){
+    // Method 1: Pixel-perfect black removal
+    try {
+      const baseCanvas = removeBlackBg(base, fx, flipX);
+      ctx.drawImage(baseCanvas, 0,0,CF_W,CF_H, dx,dy,CD_W,CD_H);
+
+      if(hair&&hair.complete&&hair.naturalWidth){
+        const hairCanvas = removeBlackBg(hair, fx, flipX);
+        ctx.drawImage(hairCanvas, 0,0,CF_W,CF_H, dx,dy,CD_W,CD_H);
+        // Tint hair with player color
+        ctx.globalCompositeOperation='source-atop';
+        ctx.fillStyle=pal.body||'#E63946';
+        ctx.globalAlpha=0.5;
+        ctx.fillRect(dx,dy,CD_W,CD_H);
+        ctx.globalAlpha=1;
+        ctx.globalCompositeOperation='source-over';
+      }
+      ctx.restore();
+      return true;
+    } catch(e) {
+      canUseGetImageData = false;
+      ctx.restore();
+      // Fall through to Method 2
+    }
   }
+
+  // Method 2: Direct draw without black removal (CORS-safe fallback)
+  // Uses 'lighter' blend mode which makes black pixels invisible
+  ctx.globalCompositeOperation = 'source-over';
+
+  // Draw a temporary background-colored rect to blend against
+  // Actually, let's use a simpler approach: draw directly and use screen blend
+  // Screen blend: result = 1 - (1-a)(1-b), black(0) stays as background
+  ctx.globalCompositeOperation = 'screen';
+  if(flipX){
+    ctx.save();
+    ctx.translate(dx + CD_W, dy);
+    ctx.scale(-1, 1);
+    ctx.drawImage(base, fx,0,CF_W,CF_H, 0,0,CD_W,CD_H);
+    if(hair&&hair.complete&&hair.naturalWidth){
+      ctx.drawImage(hair, fx,0,CF_W,CF_H, 0,0,CD_W,CD_H);
+    }
+    ctx.restore();
+  } else {
+    ctx.drawImage(base, fx,0,CF_W,CF_H, dx,dy,CD_W,CD_H);
+    if(hair&&hair.complete&&hair.naturalWidth){
+      ctx.drawImage(hair, fx,0,CF_W,CF_H, dx,dy,CD_W,CD_H);
+    }
+  }
+  ctx.globalCompositeOperation = 'source-over';
 
   ctx.restore();
   return true;
 }
 
+// ──── Cute pixel-art fallback character (no external images) ────
+function drawFallbackChar(sx, sy, pal, dir, moving, t){
+  const S = 2; // pixel scale
+  const bx = Math.round(sx - 8*S);
+  const by = Math.round(sy - 24*S);
+  const color = pal.body || '#E63946';
+  const frame = moving ? Math.floor(t/6) % 4 : 0;
+
+  ctx.save();
+
+  // Body (shirt)
+  ctx.fillStyle = color;
+  ctx.fillRect(bx+4*S, by+10*S, 8*S, 8*S);
+
+  // Head (skin)
+  ctx.fillStyle = '#FFDAB9';
+  ctx.fillRect(bx+4*S, by+2*S, 8*S, 8*S);
+
+  // Eyes
+  ctx.fillStyle = '#333';
+  if(dir === 1){ // left
+    ctx.fillRect(bx+5*S, by+5*S, 1*S, 2*S);
+    ctx.fillRect(bx+8*S, by+5*S, 1*S, 2*S);
+  } else if(dir === 3){ // right
+    ctx.fillRect(bx+7*S, by+5*S, 1*S, 2*S);
+    ctx.fillRect(bx+10*S, by+5*S, 1*S, 2*S);
+  } else { // up/down
+    ctx.fillRect(bx+6*S, by+5*S, 1*S, 2*S);
+    ctx.fillRect(bx+9*S, by+5*S, 1*S, 2*S);
+  }
+
+  // Mouth (smile)
+  if(dir !== 0){ // not facing up
+    ctx.fillRect(bx+7*S, by+8*S, 2*S, 1*S);
+  }
+
+  // Hair
+  ctx.fillStyle = color;
+  ctx.fillRect(bx+3*S, by+1*S, 10*S, 3*S);
+  ctx.fillRect(bx+3*S, by+3*S, 2*S, 3*S);
+  ctx.fillRect(bx+11*S, by+3*S, 2*S, 3*S);
+
+  // Legs (with walk animation)
+  ctx.fillStyle = '#5B86E5';
+  const legOff = moving ? (frame < 2 ? 1 : -1) : 0;
+  ctx.fillRect(bx+5*S, by+18*S + legOff*S, 2*S, 4*S);
+  ctx.fillRect(bx+9*S, by+18*S - legOff*S, 2*S, 4*S);
+
+  // Shoes
+  ctx.fillStyle = '#8B4513';
+  ctx.fillRect(bx+4*S, by+22*S + legOff*S, 3*S, 2*S);
+  ctx.fillRect(bx+9*S, by+22*S - legOff*S, 3*S, 2*S);
+
+  // Arms
+  ctx.fillStyle = '#FFDAB9';
+  const armOff = moving ? (frame < 2 ? -1 : 1) : 0;
+  ctx.fillRect(bx+2*S, by+11*S + armOff*S, 2*S, 5*S);
+  ctx.fillRect(bx+12*S, by+11*S - armOff*S, 2*S, 5*S);
+
+  ctx.restore();
+}
+
+// ──── Chat bubble drawing ────
+function drawChatBubble(sx,sy,text,color){
+  ctx.save();
+  ctx.font='bold 11px "Nanum Gothic",sans-serif';
+  const maxW=90,padding=8;
+  const words=text.split('');
+  const lines=[];let line='';
+  for(const ch of words){if(ctx.measureText(line+ch).width>maxW-padding*2){if(line)lines.push(line);line=ch;}else line+=ch;}
+  if(line)lines.push(line);
+  const lineH=15,bw=Math.max(...lines.map(l=>ctx.measureText(l).width))+padding*2;
+  const bh=lines.length*lineH+padding*2+4;
+  const bx=Math.round(sx-bw/2);
+  const by=Math.round(sy-CD_H-bh-10);
+
+  ctx.fillStyle='rgba(255,255,255,0.95)';
+  const r=8;
+  ctx.beginPath();
+  ctx.moveTo(bx+r,by);ctx.lineTo(bx+bw-r,by);ctx.quadraticCurveTo(bx+bw,by,bx+bw,by+r);
+  ctx.lineTo(bx+bw,by+bh-r);ctx.quadraticCurveTo(bx+bw,by+bh,bx+bw-r,by+bh);
+  ctx.lineTo(bx+bw/2+5,by+bh);ctx.lineTo(bx+bw/2,by+bh+6);ctx.lineTo(bx+bw/2-5,by+bh);
+  ctx.lineTo(bx+r,by+bh);ctx.quadraticCurveTo(bx,by+bh,bx,by+bh-r);
+  ctx.lineTo(bx,by+r);ctx.quadraticCurveTo(bx,by,bx+r,by);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle=color||'#FF9EC4';ctx.lineWidth=1.5;ctx.stroke();
+
+  ctx.fillStyle='#333';
+  lines.forEach((l,i)=>{
+    ctx.fillText(l,bx+padding,by+padding+12+i*lineH);
+  });
+  ctx.restore();
+}
+
+// ──── Main avatar drawing (sprite + fallback + UI) ────
 function drawAvatar(sx,sy,pal,dir,moving,t,name,emote,chatBubble){
   // Shadow
   ctx.save();
@@ -1123,17 +1232,18 @@ function drawAvatar(sx,sy,pal,dir,moving,t,name,emote,chatBubble){
   ctx.fill();
   ctx.restore();
 
-  // Try sprite, fallback to rectangle avatar
-  const spriteOk = drawSpriteChar(sx,sy,pal,dir,moving,t);
+  // Try sprite drawing (wrapped in try-catch for safety)
+  let spriteOk = false;
+  try {
+    spriteOk = drawSpriteChar(sx,sy,pal,dir,moving,t);
+  } catch(e) {
+    spriteOk = false;
+    console.warn('스프라이트 렌더링 오류:', e.message);
+  }
 
+  // Fallback: cute pixel character
   if(!spriteOk){
-    // Fallback: simple colored block avatar
-    const p=SCALE,x=Math.round(sx-TS/2),y=Math.round(sy-TS);
-    const fr=moving?Math.floor(t/6)%2:0;
-    ctx.fillStyle=pal.body||'#E63946';
-    ctx.fillRect(x+3*p,y+2*p,10*p,12*p);
-    ctx.fillStyle='#FFCBA4';
-    ctx.fillRect(x+4*p,y,8*p,6*p);
+    drawFallbackChar(sx, sy, pal, dir, moving, t);
   }
 
   // ── Name tag ──
@@ -1144,17 +1254,30 @@ function drawAvatar(sx,sy,pal,dir,moving,t,name,emote,chatBubble){
   ctx.fillStyle='rgba(255,255,255,0.92)';
   ctx.strokeStyle=pal.body||'#E63946';
   ctx.lineWidth=1.5;
-  ctx.fillRect(ntx,nty,tw+12,14);
-  ctx.strokeRect(ntx,nty,tw+12,14);
+  // Rounded name tag background
+  const nw=tw+12, nh=16, nr=4;
+  ctx.beginPath();
+  ctx.moveTo(ntx+nr,nty);ctx.lineTo(ntx+nw-nr,nty);ctx.quadraticCurveTo(ntx+nw,nty,ntx+nw,nty+nr);
+  ctx.lineTo(ntx+nw,nty+nh-nr);ctx.quadraticCurveTo(ntx+nw,nty+nh,ntx+nw-nr,nty+nh);
+  ctx.lineTo(ntx+nr,nty+nh);ctx.quadraticCurveTo(ntx,nty+nh,ntx,nty+nh-nr);
+  ctx.lineTo(ntx,nty+nr);ctx.quadraticCurveTo(ntx,nty,ntx+nr,nty);
+  ctx.closePath();
+  ctx.fill();ctx.stroke();
   ctx.fillStyle=pal.body||'#E63946';
-  ctx.fillText(name,ntx+6,nty+11);
+  ctx.fillText(name,ntx+6,nty+12);
 
   // ── Emote ──
   if(emote){
     const ex=Math.round(sx+8), ey=Math.round(sy-CD_H-30);
     ctx.fillStyle='rgba(255,255,255,0.96)';
     ctx.strokeStyle='#FF9EC4'; ctx.lineWidth=1.5;
-    ctx.fillRect(ex,ey,30,24); ctx.strokeRect(ex,ey,30,24);
+    ctx.beginPath();
+    ctx.moveTo(ex+4,ey);ctx.lineTo(ex+26,ey);ctx.quadraticCurveTo(ex+30,ey,ex+30,ey+4);
+    ctx.lineTo(ex+30,ey+20);ctx.quadraticCurveTo(ex+30,ey+24,ex+26,ey+24);
+    ctx.lineTo(ex+4,ey+24);ctx.quadraticCurveTo(ex,ey+24,ex,ey+20);
+    ctx.lineTo(ex,ey+4);ctx.quadraticCurveTo(ex,ey,ex+4,ey);
+    ctx.closePath();
+    ctx.fill();ctx.stroke();
     ctx.fillStyle='#333'; ctx.font='14px serif';
     ctx.fillText(emote,ex+4,ey+18);
   }
@@ -1165,6 +1288,9 @@ function drawAvatar(sx,sy,pal,dir,moving,t,name,emote,chatBubble){
   }
 }
 
+// ═══════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════
 function render(){
   const VW = document.getElementById('game-canvas').width;
   const VH = document.getElementById('game-canvas').height;
@@ -1191,7 +1317,6 @@ function render(){
   ctx.save();
   ctx.translate(-camX,-camY);
 
-  // Draw tiles in viewport only
   const tx0=Math.max(0,Math.floor(camX/TS)-1);
   const ty0=Math.max(0,Math.floor(camY/TS)-1);
   const tx1=Math.min(COLS,Math.ceil((camX+VW)/TS)+1);
