@@ -928,98 +928,80 @@ function tsTile(dx,dy,sx,sy,sw,sh){
 }
 
 // Ground tile type → tileset source coords (sx, sy)
-// Based on Sunnyside World 16px tileset layout
+// Measured from actual Sunnyside 16px tileset (1024x1024)
 const TILE_SRC = {
-  grass:  {sx:96,  sy:64},   // plain grass
-  grass2: {sx:112, sy:64},   // grass variant
-  water:  {sx:128, sy:80},   // water
-  flower: {sx:528, sy:160},  // small flower
-  path:   {sx:336, sy:80},   // dirt path
-  // Trees: 32x32 source (2x2 tiles), drawn larger
-  tree:   {sx:640, sy:0,  sw:32, sh:32},
-  // House top (roof): 48x32, House bottom: 48x32
-  house_t:{sx:256, sy:32, sw:48, sh:32},
-  house_b:{sx:256, sy:64, sw:48, sh:32},
+  grass:  {sx:16,  sy:16},   // plain green grass center
+  water:  {sx:160, sy:320},  // water blue
+  flower: {sx:544, sy:160},  // small flower
+  path:   {sx:96,  sy:480},  // sandy dirt path
+  tree:   {sx:672, sy:0,   sw:32, sh:32}, // large tree top-right
+  house_t:{sx:256, sy:32,  sw:48, sh:32},
+  house_b:{sx:256, sy:64,  sw:48, sh:32},
 };
 
 function drawTile(tx,ty){
   const x=tx*TS, y=ty*TS, t=MAP[ty][tx];
+  const ts=IMGS.tileset;
+  const ok=(ts&&ts.complete&&ts.naturalWidth>0);
 
   if(t===0){
-    // Grass – try tileset, fallback to color
-    if(!tsTile(x,y,96,64)){
-      ctx.fillStyle='#78C850'; ctx.fillRect(x,y,TS,TS);
-      ctx.fillStyle='#68B840';
-      if((tx+ty)%3===0) ctx.fillRect(x+4,y+6,4,8);
-      if((tx*3+ty)%5===0) ctx.fillRect(x+18,y+14,4,8);
-    }
+    // Plain grass - use tile at (16,16) which is center grass
+    if(ok) ctx.drawImage(ts,16,16,16,16,x,y,TS,TS);
+    else{ctx.fillStyle='#78C850';ctx.fillRect(x,y,TS,TS);}
   }
   else if(t===1){
-    // Water – animated
-    if(!tsTile(x,y,128,80)){
-      const wf=Math.floor(Date.now()/500)%2;
-      ctx.fillStyle='#4EA8DE'; ctx.fillRect(x,y,TS,TS);
-      ctx.fillStyle='rgba(255,255,255,0.3)';
-      ctx.fillRect(x+(wf*6),y+8,12,3);
-      ctx.fillRect(x+16+(wf*4),y+20,8,3);
-    }
+    // Water - use water tile, animate between two frames
+    const wf=Math.floor(Date.now()/600)%2;
+    if(ok) ctx.drawImage(ts,160+wf*16,320,16,16,x,y,TS,TS);
+    else{ctx.fillStyle='#4EA8DE';ctx.fillRect(x,y,TS,TS);}
   }
   else if(t===3){
-    // Flower on grass
-    tsTile(x,y,96,64);  // draw grass first
-    if(!tsTile(x,y,528,160)){
-      ctx.fillStyle='#78C850'; ctx.fillRect(x,y,TS,TS);
+    // Flower: grass + flower overlay
+    if(ok){
+      ctx.drawImage(ts,16,16,16,16,x,y,TS,TS);
+      const fc=[[544,160],[560,160],[544,176],[560,176]];
+      const [fx2,fy2]=fc[(tx+ty)%4];
+      ctx.drawImage(ts,fx2,fy2,16,16,x,y,TS,TS);
+    } else {
+      ctx.fillStyle='#78C850';ctx.fillRect(x,y,TS,TS);
       ctx.fillStyle=['#FF9EC4','#FFD166','#FF6B9D','#A8E6CF'][(tx+ty)%4];
-      ctx.beginPath(); ctx.arc(x+TS/2,y+TS/2,5,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle='#FFE566';
-      ctx.beginPath(); ctx.arc(x+TS/2,y+TS/2,2,0,Math.PI*2); ctx.fill();
+      ctx.beginPath();ctx.arc(x+TS/2,y+TS/2,4,0,Math.PI*2);ctx.fill();
     }
   }
   else if(t===4){
-    // Tree – draw grass base then tree sprite (2x2 tiles)
-    tsTile(x,y,96,64);
-    const ts=IMGS.tileset;
-    if(ts&&ts.complete&&ts.naturalWidth){
-      // draw tree as 2x2 tileset source (32x32) into 2x TS display
-      ctx.drawImage(ts, 640,0,32,32, x-TS/2,y-TS, TS*2,TS*2);
+    // Tree: grass base + tree sprite centered on tile
+    if(ok){
+      ctx.drawImage(ts,16,16,16,16,x,y,TS,TS);
+      // Large tree is 32x32 source at top-right of tileset
+      ctx.drawImage(ts,672,0,32,32,x-TS/2,y-TS,TS*2,TS*2);
     } else {
-      // fallback tree
-      ctx.fillStyle='#78C850'; ctx.fillRect(x,y,TS,TS);
-      ctx.fillStyle='#8B5E3C'; ctx.fillRect(x+12,y+20,8,12);
-      ctx.fillStyle='#2D8B3A'; ctx.beginPath(); ctx.arc(x+TS/2,y+12,14,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle='#3DAA4A'; ctx.beginPath(); ctx.arc(x+TS/2,y+8,10,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#5AAB52';ctx.fillRect(x,y,TS,TS);
+      ctx.fillStyle='#8B5E3C';ctx.fillRect(x+TS/2-4,y+TS/2,8,TS/2);
+      ctx.fillStyle='#2D8B3A';ctx.beginPath();ctx.arc(x+TS/2,y+TS/3,TS/3,0,Math.PI*2);ctx.fill();
     }
   }
   else if(t===5){
-    // House – draw grass base then house from tileset
-    tsTile(x,y,96,64);
-    const ts=IMGS.tileset;
-    if(ts&&ts.complete&&ts.naturalWidth){
-      // House top (roof area): 48x32 → 3×2 tiles wide, draw spanning 3 tiles
-      // We draw a house that spans the 3x3 area it occupies in the map
-      // Only draw on the top-left corner of each 3x3 house block
-      // Find top-left of this house block
-      let htx=tx, hty=ty;
-      while(htx>0&&MAP[hty][htx-1]===5) htx--;
-      while(hty>0&&MAP[hty-1][htx]===5) hty--;
+    // House: grass base, draw house only from top-left corner of each 3x3 block
+    if(ok){
+      ctx.drawImage(ts,16,16,16,16,x,y,TS,TS);
+      let htx=tx,hty=ty;
+      while(htx>0&&MAP[hty][htx-1]===5)htx--;
+      while(hty>0&&MAP[hty-1][htx]===5)hty--;
       if(htx===tx&&hty===ty){
-        // Draw full house from tileset (3x3 tiles = 96x96 display)
-        ctx.drawImage(ts, 256,32,48,32, x,y, TS*3,TS*2);      // roof
-        ctx.drawImage(ts, 256,64,48,32, x,y+TS*2, TS*3,TS*2); // walls
+        // Draw house roof (48x32 source) stretched over 3x2 tiles
+        ctx.drawImage(ts,256,32,48,32,x,y,TS*3,TS*2);
+        ctx.drawImage(ts,256,64,48,32,x,y+TS*2,TS*3,TS*2);
       }
     } else {
-      // fallback house
-      ctx.fillStyle='#78C850'; ctx.fillRect(x,y,TS,TS);
-      ctx.fillStyle='#FFF0F5'; ctx.fillRect(x+2,y+8,TS-4,TS-8);
-      ctx.fillStyle='#FF9EC4'; ctx.fillRect(x,y+2,TS,8);
+      ctx.fillStyle='#78C850';ctx.fillRect(x,y,TS,TS);
+      ctx.fillStyle='#FFF0F5';ctx.fillRect(x+2,y+8,TS-4,TS-8);
+      ctx.fillStyle='#FF9EC4';ctx.fillRect(x,y,TS,8);
     }
   }
   else if(t===6){
-    // Path
-    if(!tsTile(x,y,336,80)){
-      ctx.fillStyle='#D4A870'; ctx.fillRect(x,y,TS,TS);
-      ctx.fillStyle='#C49860'; ctx.fillRect(x+2,y+2,4,4);
-    }
+    // Path/dirt
+    if(ok) ctx.drawImage(ts,96,480,16,16,x,y,TS,TS);
+    else{ctx.fillStyle='#D4A870';ctx.fillRect(x,y,TS,TS);}
   }
 }
 
@@ -1070,6 +1052,7 @@ function drawSpriteChar(sx,sy,pal,dir,moving,t){
   const base = IMGS['base'];
   const hair = IMGS['hair_'+(pal.hair||'shorthair')];
   if(!base||!base.complete||!base.naturalWidth) return false;
+  detectFrameSize();
 
   // Frame: 0-7 while walking, 0 when idle
   const frame = moving ? Math.floor(t/5)%CF_N : 0;
