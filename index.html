@@ -12,47 +12,42 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{width:100%;height:100%;overflow:hidden;font-family:'Nanum Gothic',sans-serif;background:#FFB7D5;touch-action:none;user-select:none;}
 #game-screen{position:fixed;inset:0;display:flex;flex-direction:column;background:#FFB7D5;}
-.top-bar{padding:calc(var(--safe-top)+8px) 14px 8px;background:linear-gradient(135deg,var(--dpink),#C0507A);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10;box-shadow:0 2px 8px rgba(232,100,154,0.4);}
-.top-logo{font-family:'Nanum Pen Script',cursive;font-size:20px;color:#fff;text-shadow:1px 2px 4px rgba(0,0,0,0.2);}
+.top-bar{padding:calc(var(--safe-top)+8px) 14px 8px;background:linear-gradient(135deg,var(--dpink),#C0507A);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10;}
+.top-logo{font-family:'Nanum Pen Script',cursive;font-size:20px;color:#fff;}
 .top-right{display:flex;align-items:center;gap:8px;}
 .online-badge{background:rgba(255,255,255,0.25);border-radius:20px;padding:4px 10px;font-size:11px;color:#fff;font-weight:800;}
 .top-icon-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.25);border:none;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.canvas-wrap{flex:1;position:relative;overflow:hidden;background:#6DBF60;}
-#game-canvas{display:block;image-rendering:pixelated;width:100%;height:100%;touch-action:none;}
-#joy-zone{position:absolute;bottom:20px;left:20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.2);border:3px solid rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;touch-action:none;box-shadow:0 4px 16px rgba(0,0,0,0.15);}
-#joy-knob{width:40px;height:40px;border-radius:50%;background:rgba(232,100,154,0.8);box-shadow:0 2px 8px rgba(232,100,154,0.5);transition:transform .04s;}
+.canvas-wrap{flex:1;position:relative;overflow:hidden;background:#4a8c3f;}
+#game-canvas{display:block;width:100%;height:100%;touch-action:none;}
+#joy-zone{position:absolute;bottom:20px;left:20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.2);border:3px solid rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;touch-action:none;}
+#joy-knob{width:40px;height:40px;border-radius:50%;background:rgba(232,100,154,0.8);transition:transform .04s;}
 .emote-bar{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;}
-.emote-fab{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.88);border:none;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.15);backdrop-filter:blur(4px);transition:transform .12s;}
+.emote-fab{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.88);border:none;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.15);}
 .emote-fab:active{transform:scale(.88);}
-.bottom-nav{padding:8px 6px calc(var(--safe-bot)+6px);background:rgba(255,255,255,0.97);border-top:2px solid var(--lpink);display:flex;align-items:center;gap:4px;flex-shrink:0;backdrop-filter:blur(10px);z-index:10;}
-.nav-btn{flex:1;padding:7px 2px;border:none;border-radius:12px;font-family:'Nanum Gothic',sans-serif;font-size:10px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .15s;}
+.bottom-nav{padding:8px 6px calc(var(--safe-bot)+6px);background:rgba(255,255,255,0.97);border-top:2px solid var(--lpink);display:flex;align-items:center;gap:4px;flex-shrink:0;z-index:10;}
+.nav-btn{flex:1;padding:7px 2px;border:none;border-radius:12px;font-family:'Nanum Gothic',sans-serif;font-size:10px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;}
 .nav-btn .nb-icon{font-size:20px;}
 .nav-btn.pink{background:var(--lpink);color:var(--dpink);}
-.nav-btn.mint{background:var(--lmint);color:#2D8A5A;}
-.nav-btn.blue{background:var(--lblue);color:#2255AA;}
-.nav-btn.yellow{background:var(--lyellow);color:#886600;}
 .nav-btn.purple{background:var(--lpurple);color:#6A2DAA;}
+.nav-btn.yellow{background:var(--lyellow);color:#886600;}
+.nav-btn.blue{background:var(--lblue);color:#2255AA;}
 .nav-btn:active{transform:scale(.93);}
 .sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s;}
 .sheet-overlay.open{opacity:1;pointer-events:all;}
-.sheet{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:22px 22px 0 0;padding:0 0 calc(var(--safe-bot)+16px);z-index:50;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);max-height:85vh;overflow:hidden;box-shadow:0 -8px 32px rgba(232,100,154,0.25);}
+.sheet{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:22px 22px 0 0;padding:0 0 calc(var(--safe-bot)+16px);z-index:50;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);max-height:85vh;overflow:hidden;}
 .sheet.open{transform:translateY(0);}
 .sheet-handle{width:36px;height:4px;border-radius:2px;background:#DDD;margin:10px auto 6px;}
 .sheet-title{font-family:'Nanum Pen Script',cursive;font-size:22px;color:var(--dpink);text-align:center;padding:2px 0 10px;border-bottom:2px dashed var(--lpink);margin:0 16px;}
 .sheet-body{padding:14px 16px;overflow-y:auto;max-height:calc(85vh - 80px);}
 #chat-log{height:200px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:8px;background:var(--lpink);border-radius:14px;padding:10px;}
-.chat-bubble-wrap{display:flex;align-items:flex-end;gap:8px;}
-.chat-bubble-wrap.me{flex-direction:row-reverse;}
+.chat-bubble-wrap{display:flex;align-items:flex-end;gap:8px;}.chat-bubble-wrap.me{flex-direction:row-reverse;}
 .bubble-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;border:2px solid #fff;}
-.bubble-inner{max-width:75%;}
-.bubble-name{font-size:10px;color:#999;margin-bottom:2px;}
-.bubble-name.me-name{text-align:right;}
+.bubble-inner{max-width:75%;}.bubble-name{font-size:10px;color:#999;margin-bottom:2px;}.bubble-name.me-name{text-align:right;}
 .bubble-text{padding:8px 12px;border-radius:18px;font-size:13px;line-height:1.5;display:inline-block;word-break:break-all;}
-.bubble-text.other{background:#fff;color:#333;border-bottom-left-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,0.1);}
-.bubble-text.me{background:var(--dpink);color:#fff;border-bottom-right-radius:4px;}
+.bubble-text.other{background:#fff;color:#333;border-bottom-left-radius:4px;}.bubble-text.me{background:var(--dpink);color:#fff;border-bottom-right-radius:4px;}
 .chat-input-row{display:flex;gap:8px;}
-.chat-inp{flex:1;border:2px solid var(--pink);border-radius:22px;padding:10px 16px;font-family:'Nanum Gothic',sans-serif;font-size:14px;outline:none;background:#fff;touch-action:auto;user-select:auto;}
-.send-btn{background:linear-gradient(135deg,var(--dpink),#C0507A);color:#fff;border:none;border-radius:22px;padding:10px 18px;font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;}
+.chat-inp{flex:1;border:2px solid var(--pink);border-radius:22px;padding:10px 16px;font-family:'Nanum Gothic',sans-serif;font-size:14px;outline:none;touch-action:auto;user-select:auto;}
+.send-btn{background:linear-gradient(135deg,var(--dpink),#C0507A);color:#fff;border:none;border-radius:22px;padding:10px 18px;font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:800;cursor:pointer;}
 #gb-page{position:fixed;inset:0;background:linear-gradient(160deg,#FFD6E7,#FFF5CC,#D4F5E9);z-index:60;transform:translateX(100%);transition:transform .35s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column;overflow:hidden;}
 #gb-page.open{transform:translateX(0);}
 .page-header{padding:calc(var(--safe-top)+10px) 16px 10px;background:linear-gradient(135deg,var(--dpink),#C0507A);display:flex;align-items:center;gap:12px;flex-shrink:0;}
@@ -62,39 +57,27 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nanum Gothic',sans
 .gb-write-card{background:#fff;border-radius:18px;padding:16px;border:2px solid var(--pink);box-shadow:3px 4px 0 var(--pink);margin-bottom:16px;}
 .gb-write-card h3{font-size:13px;font-weight:800;color:var(--dpink);margin-bottom:10px;}
 .gb-textarea{width:100%;border:2px solid var(--lpink);border-radius:12px;padding:10px 14px;font-family:'Nanum Gothic',sans-serif;font-size:14px;outline:none;resize:none;min-height:80px;touch-action:auto;user-select:auto;}
-.gb-submit-btn{width:100%;margin-top:10px;padding:12px;background:linear-gradient(135deg,var(--dpink),#C0507A);color:#fff;border:none;border-radius:14px;font-family:'Nanum Gothic',sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:2px 3px 0 #A03060;}
+.gb-submit-btn{width:100%;margin-top:10px;padding:12px;background:linear-gradient(135deg,var(--dpink),#C0507A);color:#fff;border:none;border-radius:14px;font-family:'Nanum Gothic',sans-serif;font-size:14px;font-weight:800;cursor:pointer;}
 .gb-entries{display:flex;flex-direction:column;gap:12px;}
 .gb-entry{background:#fff;border-radius:18px;padding:14px 16px;border:2px solid var(--mint);box-shadow:2px 3px 0 var(--mint);}
 .gb-entry-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .gb-entry-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
-.gb-entry-name{font-size:13px;font-weight:800;}
-.gb-entry-time{font-size:10px;color:#999;margin-top:1px;}
-.gb-entry-text{font-size:14px;color:#444;line-height:1.7;}
+.gb-entry-name{font-size:13px;font-weight:800;}.gb-entry-time{font-size:10px;color:#999;margin-top:1px;}.gb-entry-text{font-size:14px;color:#444;line-height:1.7;}
 #login-screen{position:fixed;inset:0;background:linear-gradient(160deg,#FFD6E7,#FFF5CC,#D4F5E9);display:flex;flex-direction:column;overflow-y:auto;padding:calc(var(--safe-top)+20px) 20px calc(var(--safe-bot)+20px);z-index:100;}
-.login-hero{text-align:center;padding:24px 0 20px;}
-.login-hero .big-icon{font-size:64px;margin-bottom:10px;}
-.login-hero h1{font-family:'Nanum Pen Script',cursive;font-size:32px;color:var(--dpink);margin-bottom:6px;}
-.login-hero p{font-size:12px;color:#999;}
+.login-hero{text-align:center;padding:24px 0 20px;}.login-hero .big-icon{font-size:64px;margin-bottom:10px;}
+.login-hero h1{font-family:'Nanum Pen Script',cursive;font-size:32px;color:var(--dpink);margin-bottom:6px;}.login-hero p{font-size:12px;color:#999;}
 .login-card{background:#fff;border-radius:20px;padding:22px;border:2px solid var(--pink);box-shadow:4px 5px 0 var(--pink);}
 .field-label{font-size:12px;font-weight:800;color:var(--dpink);margin-bottom:8px;display:block;}
-.big-input{width:100%;border:2px solid var(--pink);border-radius:14px;padding:14px 16px;font-family:'Nanum Gothic',sans-serif;font-size:16px;outline:none;color:#333;touch-action:auto;user-select:auto;}
+.big-input{width:100%;border:2px solid var(--pink);border-radius:14px;padding:14px 16px;font-family:'Nanum Gothic',sans-serif;font-size:16px;outline:none;touch-action:auto;user-select:auto;}
 .big-start-btn{width:100%;margin-top:18px;padding:16px;background:linear-gradient(135deg,var(--dpink),#C0507A);color:#fff;border:none;border-radius:16px;font-family:'Nanum Gothic',sans-serif;font-size:17px;font-weight:800;cursor:pointer;box-shadow:3px 4px 0 #A03060;}
-.big-start-btn:active{transform:translate(2px,3px);box-shadow:1px 1px 0 #A03060;}
 .color-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;}
-.color-dot{width:40px;height:40px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .15s;box-shadow:1px 2px 4px rgba(0,0,0,0.15);}
+.color-dot{width:40px;height:40px;border-radius:50%;cursor:pointer;border:3px solid transparent;box-shadow:1px 2px 4px rgba(0,0,0,0.15);}
 .color-dot.sel{border:3px solid #333;box-shadow:0 0 0 2px #fff,0 0 0 4px #333;}
 .color-name{font-size:11px;color:#999;margin-top:5px;}
-.fdeco{position:fixed;pointer-events:none;z-index:0;font-size:18px;opacity:0.4;animation:fd 5s ease-in-out infinite;}
-@keyframes fd{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-12px) rotate(8deg)}}
 #debug-info{position:absolute;top:4px;left:4px;background:rgba(0,0,0,0.6);color:#0f0;font:10px monospace;padding:4px 8px;border-radius:4px;z-index:5;pointer-events:none;}
 </style>
 </head>
 <body>
-<div class="fdeco" style="top:8%;left:3%">🌸</div>
-<div class="fdeco" style="top:20%;right:5%;animation-delay:1.2s">💫</div>
-<div class="fdeco" style="bottom:25%;left:2%;animation-delay:2s">🎀</div>
-
-<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-hero"><div class="big-icon">🏡</div><h1>우리 가족 미니홈피</h1><p>소중한 우리 가족만의 공간 🌸</p></div>
   <div class="login-card">
@@ -103,14 +86,12 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nanum Gothic',sans
     <div style="margin-top:16px;"><label class="field-label">🎨 내 색상</label><div class="color-row" id="color-pick"></div><div class="color-name" id="color-label">선택됨: 빨강</div></div>
     <button class="big-start-btn" onclick="startGame()">🏠 입장하기</button>
   </div>
-  <div id="auto-hint" style="display:none;margin-top:14px;background:#fff;border:2px solid var(--mint);border-radius:16px;padding:14px 18px;text-align:center;box-shadow:2px 3px 0 var(--mint);">
+  <div id="auto-hint" style="display:none;margin-top:14px;background:#fff;border:2px solid var(--mint);border-radius:16px;padding:14px 18px;text-align:center;">
     <div style="font-size:13px;font-weight:800;color:#2D8A5A;margin-bottom:6px;">✅ 저장된 정보가 있어요!</div>
     <button onclick="quickLogin()" style="width:100%;padding:12px;background:linear-gradient(135deg,#52B788,#2D8A5A);color:#fff;border:none;border-radius:12px;font-family:'Nanum Gothic',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">⚡ 바로 입장하기</button>
   </div>
-  <div style="text-align:center;margin-top:16px;font-size:11px;color:#aaa;line-height:2;">같은 링크로 가족 모두 접속하면 함께 만날 수 있어요 💕</div>
+  <div style="text-align:center;margin-top:16px;font-size:11px;color:#aaa;">같은 링크로 가족 모두 접속하면 함께 만날 수 있어요 💕</div>
 </div>
-
-<!-- GAME -->
 <div id="game-screen" style="display:none;">
   <div class="top-bar"><div class="top-logo">🏠 우리 홈피</div><div class="top-right"><div class="online-badge">👥 <span id="online-count">1</span>명</div><button class="top-icon-btn" onclick="toggleBgm()" id="bgm-btn">🎵</button></div></div>
   <div class="canvas-wrap"><canvas id="game-canvas"></canvas><div id="debug-info"></div><div id="joy-zone"><div id="joy-knob"></div></div><div class="emote-bar" id="emote-bar"></div></div>
@@ -121,113 +102,65 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nanum Gothic',sans
     <button class="nav-btn blue" onclick="openSheet('profile')"><span class="nb-icon">👤</span>프로필</button>
   </div>
 </div>
-
-<!-- SHEETS -->
 <div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
 <div class="sheet" id="sheet-chat"><div class="sheet-handle"></div><div class="sheet-title">💬 가족 채팅</div><div class="sheet-body"><div id="chat-log"><div style="text-align:center;font-size:12px;color:#aaa;padding:20px;">채팅을 시작해봐요! 🌸</div></div><div class="chat-input-row"><input class="chat-inp" id="chat-input" placeholder="메시지 입력..." maxlength="30" autocomplete="off"><button class="send-btn" onclick="doSendChat()">전송</button></div></div></div>
 <div class="sheet" id="sheet-sticker"><div class="sheet-handle"></div><div class="sheet-title">🌸 스티커 보내기</div><div class="sheet-body"><div id="sticker-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px;"></div><div style="font-size:12px;color:#aaa;font-weight:700;margin-bottom:6px;">최근 스티커</div><div id="sticker-log" style="font-size:22px;letter-spacing:4px;min-height:36px;background:#f9f9f9;border-radius:10px;padding:8px 10px;"></div></div></div>
-<div class="sheet" id="sheet-profile"><div class="sheet-handle"></div><div class="sheet-title">👤 프로필</div><div class="sheet-body"><div style="text-align:center;padding:16px;background:linear-gradient(135deg,var(--lpink),var(--lyellow));border-radius:14px;margin-bottom:12px;"><div id="pa-avatar" style="font-size:40px;width:72px;height:72px;border-radius:50%;background:#fff;border:4px solid var(--dpink);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;"></div><div id="pa-name" style="font-size:18px;font-weight:800;color:var(--dpink);"></div></div><div style="display:flex;gap:8px;margin-bottom:12px;"><div style="flex:1;background:var(--lpink);border-radius:12px;padding:10px;text-align:center;"><div style="font-size:18px;font-weight:800;color:var(--dpink);" id="v-today">-</div><div style="font-size:10px;color:#C0507A;margin-top:2px;">오늘</div></div><div style="flex:1;background:var(--lpink);border-radius:12px;padding:10px;text-align:center;"><div style="font-size:18px;font-weight:800;color:var(--dpink);" id="v-total">-</div><div style="font-size:10px;color:#C0507A;margin-top:2px;">전체</div></div><div style="flex:1;background:var(--lpink);border-radius:12px;padding:10px;text-align:center;"><div style="font-size:18px;font-weight:800;color:var(--dpink);" id="online-count2">1</div><div style="font-size:10px;color:#C0507A;margin-top:2px;">접속중</div></div></div><div style="font-size:12px;font-weight:800;color:#2D8A5A;margin-bottom:8px;">🟢 접속중</div><div id="online-list"></div></div></div>
+<div class="sheet" id="sheet-profile"><div class="sheet-handle"></div><div class="sheet-title">👤 프로필</div><div class="sheet-body"><div style="text-align:center;padding:16px;background:linear-gradient(135deg,var(--lpink),var(--lyellow));border-radius:14px;margin-bottom:12px;"><div id="pa-avatar" style="font-size:40px;width:72px;height:72px;border-radius:50%;background:#fff;border:4px solid var(--dpink);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;"></div><div id="pa-name" style="font-size:18px;font-weight:800;color:var(--dpink);"></div></div><div style="display:flex;gap:8px;margin-bottom:12px;"><div style="flex:1;background:var(--lpink);border-radius:12px;padding:10px;text-align:center;"><div style="font-size:18px;font-weight:800;color:var(--dpink);" id="v-today">-</div><div style="font-size:10px;color:#C0507A;">오늘</div></div><div style="flex:1;background:var(--lpink);border-radius:12px;padding:10px;text-align:center;"><div style="font-size:18px;font-weight:800;color:var(--dpink);" id="v-total">-</div><div style="font-size:10px;color:#C0507A;">전체</div></div><div style="flex:1;background:var(--lpink);border-radius:12px;padding:10px;text-align:center;"><div style="font-size:18px;font-weight:800;color:var(--dpink);" id="online-count2">1</div><div style="font-size:10px;color:#C0507A;">접속중</div></div></div><div style="font-size:12px;font-weight:800;color:#2D8A5A;margin-bottom:8px;">🟢 접속중</div><div id="online-list"></div></div></div>
 <div id="gb-page"><div class="page-header"><button class="page-back-btn" onclick="closeGbPage()">←</button><div class="page-header-title">📝 방명록</div></div><div class="gb-page-body"><div class="gb-write-card"><h3>✏️ 한마디 남기기</h3><textarea class="gb-textarea" id="gb-textarea" placeholder="소중한 가족에게 한마디..." maxlength="100" rows="3"></textarea><button class="gb-submit-btn" onclick="sendGuestbook()">💌 남기기</button></div><div class="gb-entries" id="gb-entries"></div></div></div>
-
 <script>
-// ═══════════ CONFIG ═══════════
 const DB_URL='https://ourmetaverse-default-rtdb.firebaseio.com';
-const PALETTES=[
-  {name:'빨강',body:'#E63946'},{name:'파랑',body:'#457FDB'},
-  {name:'초록',body:'#52B788'},{name:'주황',body:'#F4A261'},
-  {name:'보라',body:'#9B5DE5'},{name:'핑크',body:'#F72585'},
-];
+const PALETTES=[{name:'빨강',body:'#E63946'},{name:'파랑',body:'#457FDB'},{name:'초록',body:'#52B788'},{name:'주황',body:'#F4A261'},{name:'보라',body:'#9B5DE5'},{name:'핑크',body:'#F72585'}];
 const EMOTES=['♥','★','♪','!','?','🌸'];
 const STICKERS=['🌸','💕','⭐','🎀','🍀','🌈','🎉','💫','🦋','🌷'];
-const TILE=16,SCALE=2,TS=TILE*SCALE,COLS=20,ROWS=16,W=COLS*TS,H=ROWS*TS;
-const MAP=[
-  [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4],
-  [4,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,4],
-  [4,0,5,5,5,0,0,3,0,3,0,0,0,5,5,5,0,0,0,4],
-  [4,0,5,5,5,0,0,0,0,0,0,0,0,5,5,5,0,0,0,4],
-  [4,0,5,5,5,0,6,6,6,6,6,6,0,5,5,5,0,0,0,4],
-  [4,0,0,0,0,0,6,0,0,0,6,0,0,0,0,0,0,0,0,4],
-  [4,0,0,3,0,0,6,0,1,1,6,0,0,3,0,0,4,0,0,4],
-  [4,0,0,0,0,0,6,0,1,1,6,0,0,0,0,0,0,0,0,4],
-  [4,0,0,0,0,0,6,0,0,0,6,0,0,0,0,0,4,0,0,4],
-  [4,0,4,0,0,0,6,6,6,6,6,0,0,0,0,0,0,0,0,4],
-  [4,0,0,0,3,0,0,0,0,0,0,0,3,0,0,0,0,0,0,4],
-  [4,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,4],
-  [4,0,5,5,5,0,0,0,3,0,0,0,0,0,0,0,5,5,5,4],
-  [4,0,5,5,5,0,0,0,0,0,0,0,0,0,0,0,5,5,5,4],
-  [4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-  [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4],
-];
-const SOLID=new Set([1,4,5]);
-function isSolid(tx,ty){return tx<0||ty<0||tx>=COLS||ty>=ROWS||SOLID.has(MAP[ty][tx]);}
-
-// ═══════════ IMAGE LOADER (2개만!) ═══════════
-let imgTileset=null, imgBase=null;
-let loadCount=0, allLoaded=false;
-
+let MAP_W=640,MAP_H=512;
+let imgBg=null,imgBase=null,loadCount=0,allLoaded=false;
 function loadImages(){
-  imgTileset=new Image();
-  imgTileset.onload=()=>{loadCount++;if(loadCount>=2)onAllLoaded();};
-  imgTileset.onerror=()=>{console.warn('⚠ tileset 실패');loadCount++;if(loadCount>=2)onAllLoaded();};
-  imgTileset.src='./spr_tileset_sunnysideworld_16px.png';
-
+  imgBg=new Image();
+  imgBg.onload=()=>{MAP_W=imgBg.naturalWidth*2;MAP_H=imgBg.naturalHeight*2;loadCount++;if(loadCount>=2)onAllLoaded();};
+  imgBg.onerror=()=>{loadCount++;if(loadCount>=2)onAllLoaded();};
+  imgBg.src='./map_bg.png';
   imgBase=new Image();
   imgBase.onload=()=>{loadCount++;if(loadCount>=2)onAllLoaded();};
-  imgBase.onerror=()=>{console.warn('⚠ base_walk 실패');loadCount++;if(loadCount>=2)onAllLoaded();};
+  imgBase.onerror=()=>{loadCount++;if(loadCount>=2)onAllLoaded();};
   imgBase.src='./base_walk_strip8.png';
 }
-
 function onAllLoaded(){
   allLoaded=true;
+  const c=document.getElementById('game-canvas');c.width=MAP_W;c.height=MAP_H;
   cacheCharFrames();
-  console.log('✅ 이미지 로드 완료, tileset:',!!imgTileset?.naturalWidth,'base:',!!imgBase?.naturalWidth);
 }
-
-// ═══════════ 캐릭터 프레임 캐싱 ═══════════
-// 로드 직후 1번만 getImageData로 검은배경 제거 → 캐싱
-const CF_W=48,CF_H=48,CF_N=8;
-const CD_W=TS*1.5|0, CD_H=TS*2|0;
-const cachedFrames=[], cachedFramesFlip=[];
+const CF_W=48,CF_H=48,CF_N=8,CHAR_SCALE=1.5;
+let CD_W,CD_H;
+const cachedFrames=[],cachedFramesFlip=[];
 let framesReady=false;
-
+const tintCanvas=document.createElement('canvas');
+const tintCtx=tintCanvas.getContext('2d');
 function cacheCharFrames(){
+  CD_W=Math.round(CF_W*CHAR_SCALE);CD_H=Math.round(CF_H*CHAR_SCALE);
   if(!imgBase||!imgBase.naturalWidth){framesReady=false;return;}
   for(let i=0;i<CF_N;i++){
-    // 정방향 프레임
     const c=document.createElement('canvas');c.width=CF_W;c.height=CF_H;
     const cx=c.getContext('2d');
-    cx.drawImage(imgBase, i*CF_W, 0, CF_W, CF_H, 0, 0, CF_W, CF_H);
-    // 검은 배경 → 투명
-    try{
-      const id=cx.getImageData(0,0,CF_W,CF_H);const d=id.data;
-      for(let p=0;p<d.length;p+=4){if(d[p]<30&&d[p+1]<30&&d[p+2]<30)d[p+3]=0;}
-      cx.putImageData(id,0,0);
-    }catch(e){console.warn('getImageData 실패:',e.message);}
+    cx.drawImage(imgBase,i*CF_W,0,CF_W,CF_H,0,0,CF_W,CF_H);
+    try{const id=cx.getImageData(0,0,CF_W,CF_H);const d=id.data;for(let p=0;p<d.length;p+=4){if(d[p]<30&&d[p+1]<30&&d[p+2]<30)d[p+3]=0;}cx.putImageData(id,0,0);}catch(e){}
     cachedFrames[i]=c;
-    // 좌우반전
     const cf=document.createElement('canvas');cf.width=CF_W;cf.height=CF_H;
     const cfx=cf.getContext('2d');cfx.translate(CF_W,0);cfx.scale(-1,1);cfx.drawImage(c,0,0);
     cachedFramesFlip[i]=cf;
   }
+  tintCanvas.width=CD_W;tintCanvas.height=CD_H;
   framesReady=true;
-  console.log('✅ 캐릭터 '+CF_N+'프레임 캐싱 완료');
 }
-
-// ═══════════ STATE ═══════════
 const MY_ID=(()=>{let id=sessionStorage.getItem('cy_pid');if(!id){id=Math.random().toString(36).substr(2,9);sessionStorage.setItem('cy_pid',id);}return id;})();
 let myName='',myPal=PALETTES[0],selPalIdx=0;
-let player={x:8*TS+TS/2,y:10*TS+TS,dir:2,moving:false};
+let player={x:200,y:300,dir:2,moving:false};
 let others={},keys={},tick=0;
 let myEmote=null,myEmoteT=0,myChatBubble=null,myChatBubbleT=0;
 let lastW=0,lastR=0,joystick={dx:0,dy:0};
 let ctx,bgmPlaying=false,bgmCtx=null,mIdx=0;
-
-// ═══════════ FIREBASE ═══════════
 async function fbGet(p){try{const r=await fetch(DB_URL+p+'.json');return r.ok?await r.json():null;}catch{return null;}}
 async function fbSet(p,d){try{await fetch(DB_URL+p+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});}catch{}}
 async function fbDelete(p){try{await fetch(DB_URL+p+'.json',{method:'DELETE'});}catch{}}
-
-// ═══════════ LOGIN ═══════════
 (function(){
   const cp=document.getElementById('color-pick');
   PALETTES.forEach((p,i)=>{const d=document.createElement('div');d.className='color-dot'+(i===0?' sel':'');d.style.background=p.body;d.onclick=()=>{selPalIdx=i;document.querySelectorAll('.color-dot').forEach((e,j)=>e.classList.toggle('sel',j===i));document.getElementById('color-label').textContent='선택됨: '+p.name;};cp.appendChild(d);});
@@ -237,7 +170,6 @@ async function fbDelete(p){try{await fetch(DB_URL+p+'.json',{method:'DELETE'});}
   if(sp>=0&&sp<PALETTES.length){selPalIdx=sp;document.querySelectorAll('.color-dot').forEach((e,j)=>e.classList.toggle('sel',j===sp));document.getElementById('color-label').textContent='선택됨: '+PALETTES[sp].name;}
   if(sn)document.getElementById('auto-hint').style.display='block';
 })();
-
 function startGame(){
   const n=document.getElementById('name-input').value.trim();if(!n)return;
   myName=n.slice(0,6);myPal=PALETTES[selPalIdx];
@@ -246,13 +178,12 @@ function startGame(){
   document.getElementById('game-screen').style.display='flex';
   document.getElementById('pa-avatar').textContent=myName[0]||'🏠';
   document.getElementById('pa-name').textContent=myName;
-  const canvas=document.getElementById('game-canvas');canvas.width=W;canvas.height=H;
+  const canvas=document.getElementById('game-canvas');canvas.width=MAP_W;canvas.height=MAP_H;
   ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;
+  player.x=MAP_W/2;player.y=MAP_H/2;
   loadImages();
-  // emote
   const eb=document.getElementById('emote-bar');eb.innerHTML='';
   EMOTES.forEach(e=>{const b=document.createElement('button');b.className='emote-fab';b.textContent=e;b.onclick=()=>{myEmote=e;myEmoteT=90;writePos(e);};eb.appendChild(b);});
-  // sticker
   const sg=document.getElementById('sticker-grid');sg.innerHTML='';
   STICKERS.forEach(s=>{const d=document.createElement('div');d.style.cssText='font-size:32px;text-align:center;cursor:pointer;padding:8px;border-radius:12px;background:var(--lyellow);';d.textContent=s;d.onclick=()=>sendStickerFn(s);sg.appendChild(d);});
   window.addEventListener('keydown',e=>{keys[e.code]=true;['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)&&e.preventDefault();});
@@ -263,7 +194,6 @@ function startGame(){
   updateVisitors();writePos();gameLoop();
   window.addEventListener('beforeunload',()=>fbDelete('/players/'+MY_ID));
 }
-
 function setupJoystick(){
   const jz=document.getElementById('joy-zone'),jk=document.getElementById('joy-knob');
   const R=42;let ja=false,jsx=0,jsy=0;
@@ -271,73 +201,58 @@ function setupJoystick(){
   jz.addEventListener('touchmove',e=>{if(!ja)return;e.preventDefault();const t=e.touches[0];let dx=t.clientX-jsx,dy=t.clientY-jsy;const d=Math.sqrt(dx*dx+dy*dy);if(d>R){dx=dx/d*R;dy=dy/d*R;}jk.style.transform=`translate(${dx}px,${dy}px)`;joystick.dx=dx/R;joystick.dy=dy/R;},{passive:false});
   jz.addEventListener('touchend',()=>{ja=false;jk.style.transform='translate(0,0)';joystick.dx=0;joystick.dy=0;});
 }
-
-// ═══════════ SHEETS ═══════════
 let currentSheet=null;
 function openSheet(id){closeSheet();currentSheet=id;document.getElementById('overlay').classList.add('open');document.getElementById('sheet-'+id).classList.add('open');}
 function closeSheet(){if(currentSheet){document.getElementById('sheet-'+currentSheet).classList.remove('open');currentSheet=null;}document.getElementById('overlay').classList.remove('open');}
-
-// ═══════════ GUESTBOOK ═══════════
 function openGbPage(){document.getElementById('gb-page').classList.add('open');loadGuestbook();}
 function closeGbPage(){document.getElementById('gb-page').classList.remove('open');}
-async function loadGuestbook(){const data=await fbGet('/guestbook');const el=document.getElementById('gb-entries');if(!data){el.innerHTML='<div style="text-align:center;color:#aaa;padding:20px;font-size:13px;">아직 방명록이 없어요 🌸</div>';return;}const arr=(Array.isArray(data)?data:Object.values(data)).filter(Boolean);if(!arr.length){el.innerHTML='<div style="text-align:center;color:#aaa;padding:20px;font-size:13px;">아직 방명록이 없어요 🌸</div>';return;}el.innerHTML=arr.slice().reverse().map(m=>`<div class="gb-entry"><div class="gb-entry-header"><div class="gb-entry-dot" style="background:${m.color||'#E8649A'}">${(m.name||'?')[0]}</div><div><div class="gb-entry-name" style="color:${m.color||'#E8649A'}">${esc(m.name)}</div><div class="gb-entry-time">${timeAgo(m.ts)}</div></div></div><div class="gb-entry-text">${esc(m.text)}</div></div>`).join('');}
+async function loadGuestbook(){const data=await fbGet('/guestbook');const el=document.getElementById('gb-entries');if(!data){el.innerHTML='<div style="text-align:center;color:#aaa;padding:20px;font-size:13px;">아직 방명록이 없어요 🌸</div>';return;}const arr=(Array.isArray(data)?data:Object.values(data)).filter(Boolean);if(!arr.length){el.innerHTML='<div style="text-align:center;color:#aaa;padding:20px;font-size:13px;">아직 방명록이 없어요 🌸</div>';return;}el.innerHTML=arr.slice().reverse().map(m=>'<div class="gb-entry"><div class="gb-entry-header"><div class="gb-entry-dot" style="background:'+(m.color||'#E8649A')+'">'+(m.name||'?')[0]+'</div><div><div class="gb-entry-name" style="color:'+(m.color||'#E8649A')+'">'+esc(m.name)+'</div><div class="gb-entry-time">'+timeAgo(m.ts)+'</div></div></div><div class="gb-entry-text">'+esc(m.text)+'</div></div>').join('');}
 async function sendGuestbook(){const ta=document.getElementById('gb-textarea');const txt=ta.value.trim();if(!txt||!myName)return;ta.value='';try{let msgs=await fbGet('/guestbook')||[];if(!Array.isArray(msgs))msgs=Object.values(msgs).filter(Boolean);msgs.push({name:myName,color:myPal.body,text:txt,ts:Date.now()});if(msgs.length>50)msgs=msgs.slice(-50);await fbSet('/guestbook',msgs);loadGuestbook();}catch{}}
-
-// ═══════════ CHAT ═══════════
 async function doSendChat(){const inp=document.getElementById('chat-input');const txt=inp.value.trim();if(!txt)return;inp.value='';myChatBubble=txt;myChatBubbleT=180;try{let msgs=await fbGet('/chat')||[];if(!Array.isArray(msgs))msgs=Object.values(msgs).filter(Boolean);msgs.push({name:myName,color:myPal.body,text:txt,ts:Date.now(),pid:MY_ID});if(msgs.length>60)msgs=msgs.slice(-60);await fbSet('/chat',msgs);}catch{}}
 let lastChatTs=0;
-function renderChatLog(msgs){const log=document.getElementById('chat-log');if(!msgs.length)return;log.innerHTML=msgs.slice(-30).map(m=>{const isMe=m.pid===MY_ID;return`<div class="chat-bubble-wrap${isMe?' me':''}"><div class="bubble-avatar" style="background:${m.color||'#E8649A'}">${(m.name||'?')[0]}</div><div class="bubble-inner"><div class="bubble-name${isMe?' me-name':''}">${isMe?'나':esc(m.name)}</div><div class="bubble-text ${isMe?'me':'other'}">${esc(m.text)}</div></div></div>`;}).join('');if(msgs[msgs.length-1]?.ts>lastChatTs){log.scrollTop=log.scrollHeight;lastChatTs=msgs[msgs.length-1].ts||0;}}
-
-// ═══════════ STICKER ═══════════
+function renderChatLog(msgs){const log=document.getElementById('chat-log');if(!msgs.length)return;log.innerHTML=msgs.slice(-30).map(m=>{const isMe=m.pid===MY_ID;return'<div class="chat-bubble-wrap'+(isMe?' me':'')+'"><div class="bubble-avatar" style="background:'+(m.color||'#E8649A')+'">'+(m.name||'?')[0]+'</div><div class="bubble-inner"><div class="bubble-name'+(isMe?' me-name':'')+'">'+(isMe?'나':esc(m.name))+'</div><div class="bubble-text '+(isMe?'me':'other')+'">'+esc(m.text)+'</div></div></div>';}).join('');if(msgs[msgs.length-1]?.ts>lastChatTs){log.scrollTop=log.scrollHeight;lastChatTs=msgs[msgs.length-1].ts||0;}}
 async function sendStickerFn(s){myEmote=s;myEmoteT=90;try{let sl=await fbGet('/stickers')||[];if(!Array.isArray(sl))sl=Object.values(sl).filter(Boolean);sl.push({name:myName,s,ts:Date.now()});if(sl.length>30)sl=sl.slice(-30);await fbSet('/stickers',sl);document.getElementById('sticker-log').textContent=sl.slice(-10).map(x=>x.s).join('');}catch{}}
-
-// ═══════════ BGM ═══════════
 const MELODY=[261,294,329,349,392,440,349,329,261,294,261,0,329,392,440,392,349,294,261];
 function toggleBgm(){if(!bgmCtx)bgmCtx=new(window.AudioContext||window.webkitAudioContext)();if(bgmPlaying){bgmCtx.suspend();bgmPlaying=false;document.getElementById('bgm-btn').textContent='🎵';return;}bgmCtx.resume();bgmPlaying=true;document.getElementById('bgm-btn').textContent='🔇';playNote();}
 function playNote(){if(!bgmPlaying)return;const f=MELODY[mIdx%MELODY.length];mIdx++;if(f>0){const o=bgmCtx.createOscillator(),g=bgmCtx.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0.1,bgmCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,bgmCtx.currentTime+0.35);o.connect(g);g.connect(bgmCtx.destination);o.start();o.stop(bgmCtx.currentTime+0.35);}setTimeout(playNote,420);}
-
-// ═══════════ VISITORS ═══════════
 async function updateVisitors(){try{let v=await fbGet('/visitors')||{today:0,total:0,date:''};const td=new Date().toDateString();if(v.date!==td){v.today=0;v.date=td;}v.today++;v.total++;await fbSet('/visitors',v);document.getElementById('v-today').textContent=v.today;document.getElementById('v-total').textContent=v.total;}catch{}}
-
-// ═══════════ SYNC ═══════════
 async function writePos(emote=null){await fbSet('/players/'+MY_ID,{id:MY_ID,name:myName,palette:myPal,x:player.x,y:player.y,dir:player.dir,emote:emote||null,chatBubble:myChatBubbleT>0?{text:myChatBubble,ts:Date.now()}:null,ts:Date.now()});}
 async function readAll(){
   const data=await fbGet('/players');const now=Date.now(),seen=new Set();
   if(data){for(const id in data){if(id===MY_ID)continue;const d=data[id];if(now-d.ts>12000)continue;seen.add(id);if(!others[id])others[id]={...d,rx:d.x,ry:d.y,emoteT:d.emote?70:0,chatBubbleT:0,chatBubbleText:''};else{others[id].tx=d.x;others[id].ty=d.y;others[id].dir=d.dir;others[id].name=d.name;others[id].palette=d.palette;if(d.emote&&d.emote!==others[id].emote){others[id].emote=d.emote;others[id].emoteT=70;}if(d.chatBubble&&d.chatBubble.ts>((others[id].lastChatTs)||0)){others[id].chatBubbleText=d.chatBubble.text;others[id].chatBubbleT=160;others[id].lastChatTs=d.chatBubble.ts;}}}}
   for(const id in others)if(!seen.has(id))delete others[id];
   const cnt=1+Object.keys(others).length;document.getElementById('online-count').textContent=cnt;document.getElementById('online-count2').textContent=cnt;
-  const ol=document.getElementById('online-list');ol.innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#f9f9f9;border-radius:10px;"><div style="width:10px;height:10px;border-radius:50%;background:#4CAF50;"></div><div style="font-size:13px;font-weight:700;">${esc(myName)} (나)</div></div>`;
-  for(const id in others){const o=others[id];ol.innerHTML+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#f9f9f9;border-radius:10px;"><div style="width:10px;height:10px;border-radius:50%;background:${o.palette?.body||'#999'};"></div><div style="font-size:13px;font-weight:700;">${esc(o.name)}</div></div>`;}
+  const ol=document.getElementById('online-list');ol.innerHTML='<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#f9f9f9;border-radius:10px;"><div style="width:10px;height:10px;border-radius:50%;background:#4CAF50;"></div><div style="font-size:13px;font-weight:700;">'+esc(myName)+' (나)</div></div>';
+  for(const id in others){const o=others[id];ol.innerHTML+='<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#f9f9f9;border-radius:10px;"><div style="width:10px;height:10px;border-radius:50%;background:'+(o.palette?.body||'#999')+';"></div><div style="font-size:13px;font-weight:700;">'+esc(o.name)+'</div></div>';}
   const chat=await fbGet('/chat');if(chat){const msgs=Array.isArray(chat)?chat:Object.values(chat).filter(Boolean);renderChatLog(msgs);}
 }
-
-// ═══════════ DRAW TILES ═══════════
-function drawTile(tx,ty){
-  const x=tx*TS,y=ty*TS,t=MAP[ty][tx];
-  const ok=imgTileset&&imgTileset.complete&&imgTileset.naturalWidth>0;
-  if(t===0){if(ok)ctx.drawImage(imgTileset,16,48,16,16,x,y,TS,TS);else{ctx.fillStyle='#63C940';ctx.fillRect(x,y,TS,TS);}}
-  else if(t===1){const wf=Math.floor(Date.now()/700)%2;if(ok)ctx.drawImage(imgTileset,192+wf*16,304,16,16,x,y,TS,TS);else{ctx.fillStyle='#1DB4CE';ctx.fillRect(x,y,TS,TS);}}
-  else if(t===3){if(ok){ctx.drawImage(imgTileset,16,48,16,16,x,y,TS,TS);const gv=[[32,48],[48,48],[64,48],[80,48]];const[gx,gy]=gv[(tx*3+ty*7)%4];ctx.drawImage(imgTileset,gx,gy,16,16,x,y,TS,TS);}else{ctx.fillStyle='#63C940';ctx.fillRect(x,y,TS,TS);}}
-  else if(t===4){if(ok){ctx.drawImage(imgTileset,16,48,16,16,x,y,TS,TS);ctx.drawImage(imgTileset,864,0,48,64,x-TS/2,y-TS,TS*2.5|0,TS*2.5|0);}else{ctx.fillStyle='#63C940';ctx.fillRect(x,y,TS,TS);ctx.fillStyle='#2D8B3A';ctx.beginPath();ctx.arc(x+TS/2,y+TS/3,TS/3,0,Math.PI*2);ctx.fill();}}
-  else if(t===5){if(ok){ctx.drawImage(imgTileset,16,48,16,16,x,y,TS,TS);let htx=tx,hty=ty;while(htx>0&&MAP[hty][htx-1]===5)htx--;while(hty>0&&MAP[hty-1][htx]===5)hty--;if(htx===tx&&hty===ty)ctx.drawImage(imgTileset,256,32,48,64,x,y-TS/2,TS*3,TS*4);}else{ctx.fillStyle='#FFF0F5';ctx.fillRect(x,y,TS,TS);}}
-  else if(t===6){if(ok)ctx.drawImage(imgTileset,96,544,16,16,x,y,TS,TS);else{ctx.fillStyle='#D4A870';ctx.fillRect(x,y,TS,TS);}}
+// ═══════════ DRAW ═══════════
+function drawBackground(){
+  if(imgBg&&imgBg.complete&&imgBg.naturalWidth){ctx.drawImage(imgBg,0,0,MAP_W,MAP_H);}
+  else{ctx.fillStyle='#4a8c3f';ctx.fillRect(0,0,MAP_W,MAP_H);}
 }
-
-// ═══════════ DRAW CHARACTER ═══════════
 function drawSpriteChar(sx,sy,pal,dir,moving,t){
-  if(!framesReady)return false;
+  if(!framesReady||!CD_W)return false;
   const frame=moving?Math.floor(t/5)%CF_N:0;
   const src=(dir===1)?cachedFramesFlip[frame]:cachedFrames[frame];
   if(!src)return false;
   const dx=Math.round(sx-CD_W/2),dy=Math.round(sy-CD_H);
-  // 캐싱된 투명 프레임을 그냥 그린다 (getImageData 안 함!)
-  ctx.drawImage(src,0,0,CF_W,CF_H,dx,dy,CD_W,CD_H);
-  // 색상 틴트
-  ctx.save();ctx.globalCompositeOperation='source-atop';ctx.globalAlpha=0.3;ctx.fillStyle=pal.body||'#E63946';ctx.fillRect(dx,dy,CD_W,CD_H);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';ctx.restore();
+  tintCtx.clearRect(0,0,CD_W,CD_H);
+  tintCtx.imageSmoothingEnabled=false;
+  tintCtx.globalCompositeOperation='source-over';
+  tintCtx.globalAlpha=1;
+  tintCtx.drawImage(src,0,0,CF_W,CF_H,0,0,CD_W,CD_H);
+  tintCtx.globalCompositeOperation='source-atop';
+  tintCtx.globalAlpha=0.3;
+  tintCtx.fillStyle=pal.body||'#E63946';
+  tintCtx.fillRect(0,0,CD_W,CD_H);
+  tintCtx.globalAlpha=1;
+  tintCtx.globalCompositeOperation='source-over';
+  ctx.drawImage(tintCanvas,dx,dy);
   return true;
 }
-
 function drawFallbackChar(sx,sy,pal,dir,moving,t){
+  if(!CD_W){CD_W=72;CD_H=96;}
   const S=2,bx=Math.round(sx-8*S),by=Math.round(sy-24*S),color=pal.body||'#E63946',fr=moving?Math.floor(t/6)%4:0;
   ctx.fillStyle=color;ctx.fillRect(bx+4*S,by+10*S,8*S,8*S);
   ctx.fillStyle='#FFDAB9';ctx.fillRect(bx+4*S,by+2*S,8*S,8*S);
@@ -345,61 +260,54 @@ function drawFallbackChar(sx,sy,pal,dir,moving,t){
   if(dir===1){ctx.fillRect(bx+5*S,by+5*S,S,2*S);ctx.fillRect(bx+8*S,by+5*S,S,2*S);}
   else if(dir===3){ctx.fillRect(bx+7*S,by+5*S,S,2*S);ctx.fillRect(bx+10*S,by+5*S,S,2*S);}
   else{ctx.fillRect(bx+6*S,by+5*S,S,2*S);ctx.fillRect(bx+9*S,by+5*S,S,2*S);}
-  if(dir!==0)ctx.fillRect(bx+7*S,by+8*S,2*S,S);
   ctx.fillStyle=color;ctx.fillRect(bx+3*S,by+S,10*S,3*S);
   ctx.fillStyle='#5B86E5';const lo=moving?(fr<2?1:-1):0;
   ctx.fillRect(bx+5*S,by+18*S+lo*S,2*S,4*S);ctx.fillRect(bx+9*S,by+18*S-lo*S,2*S,4*S);
-  ctx.fillStyle='#8B4513';ctx.fillRect(bx+4*S,by+22*S+lo*S,3*S,2*S);ctx.fillRect(bx+9*S,by+22*S-lo*S,3*S,2*S);
 }
-
 function drawChatBubble(sx,sy,text,color){
   ctx.save();ctx.font='bold 11px "Nanum Gothic",sans-serif';
   const pad=8,chars=[...text],lines=[];let line='';
   for(const ch of chars){if(ctx.measureText(line+ch).width>82){if(line)lines.push(line);line=ch;}else line+=ch;}
   if(line)lines.push(line);
   const lh=15,bw=Math.max(...lines.map(l=>ctx.measureText(l).width))+pad*2,bh=lines.length*lh+pad*2+4;
-  const bx=Math.round(sx-bw/2),by=Math.round(sy-CD_H-bh-10),r=8;
+  const bx=Math.round(sx-bw/2),by=Math.round(sy-(CD_H||96)-bh-10),r=8;
   ctx.fillStyle='rgba(255,255,255,0.95)';ctx.beginPath();ctx.moveTo(bx+r,by);ctx.lineTo(bx+bw-r,by);ctx.quadraticCurveTo(bx+bw,by,bx+bw,by+r);ctx.lineTo(bx+bw,by+bh-r);ctx.quadraticCurveTo(bx+bw,by+bh,bx+bw-r,by+bh);ctx.lineTo(bx+bw/2+5,by+bh);ctx.lineTo(bx+bw/2,by+bh+6);ctx.lineTo(bx+bw/2-5,by+bh);ctx.lineTo(bx+r,by+bh);ctx.quadraticCurveTo(bx,by+bh,bx,by+bh-r);ctx.lineTo(bx,by+r);ctx.quadraticCurveTo(bx,by,bx+r,by);ctx.closePath();ctx.fill();ctx.strokeStyle=color||'#FF9EC4';ctx.lineWidth=1.5;ctx.stroke();
   ctx.fillStyle='#333';lines.forEach((l,i)=>ctx.fillText(l,bx+pad,by+pad+12+i*lh));ctx.restore();
 }
-
 function drawAvatar(sx,sy,pal,dir,moving,t,name,emote,chatBubble){
-  ctx.save();ctx.fillStyle='rgba(0,0,0,0.15)';ctx.beginPath();ctx.ellipse(Math.round(sx),Math.round(sy-2),CD_W*0.3,4,0,0,Math.PI*2);ctx.fill();ctx.restore();
+  const ch=CD_H||96;
+  ctx.save();ctx.fillStyle='rgba(0,0,0,0.15)';ctx.beginPath();ctx.ellipse(Math.round(sx),Math.round(sy-2),(CD_W||72)*0.3,4,0,0,Math.PI*2);ctx.fill();ctx.restore();
   if(!drawSpriteChar(sx,sy,pal,dir,moving,t))drawFallbackChar(sx,sy,pal,dir,moving,t);
-  // 이름표
   ctx.font='bold 10px "Nanum Gothic",sans-serif';const tw=ctx.measureText(name).width;
-  const ntx=Math.round(sx-tw/2-6),nty=Math.round(sy-CD_H-18),nw=tw+12,nh=16,nr=4;
+  const ntx=Math.round(sx-tw/2-6),nty=Math.round(sy-ch-18),nw=tw+12,nh=16,nr=4;
   ctx.fillStyle='rgba(255,255,255,0.92)';ctx.strokeStyle=pal.body||'#E63946';ctx.lineWidth=1.5;
   ctx.beginPath();ctx.moveTo(ntx+nr,nty);ctx.lineTo(ntx+nw-nr,nty);ctx.quadraticCurveTo(ntx+nw,nty,ntx+nw,nty+nr);ctx.lineTo(ntx+nw,nty+nh-nr);ctx.quadraticCurveTo(ntx+nw,nty+nh,ntx+nw-nr,nty+nh);ctx.lineTo(ntx+nr,nty+nh);ctx.quadraticCurveTo(ntx,nty+nh,ntx,nty+nh-nr);ctx.lineTo(ntx,nty+nr);ctx.quadraticCurveTo(ntx,nty,ntx+nr,nty);ctx.closePath();ctx.fill();ctx.stroke();
   ctx.fillStyle=pal.body||'#E63946';ctx.fillText(name,ntx+6,nty+12);
-  if(emote){const ex=Math.round(sx+12),ey=Math.round(sy-CD_H-34);ctx.fillStyle='rgba(255,255,255,0.96)';ctx.strokeStyle='#FF9EC4';ctx.lineWidth=1.5;ctx.fillRect(ex,ey,30,24);ctx.strokeRect(ex,ey,30,24);ctx.fillStyle='#333';ctx.font='14px serif';ctx.fillText(emote,ex+5,ey+18);}
-  if(chatBubble)drawChatBubble(sx,sy-CD_H+8,chatBubble,pal.body||'#FF9EC4');
+  if(emote){const ex=Math.round(sx+12),ey=Math.round(sy-ch-34);ctx.fillStyle='rgba(255,255,255,0.96)';ctx.strokeStyle='#FF9EC4';ctx.lineWidth=1.5;ctx.fillRect(ex,ey,30,24);ctx.strokeRect(ex,ey,30,24);ctx.fillStyle='#333';ctx.font='14px serif';ctx.fillText(emote,ex+5,ey+18);}
+  if(chatBubble)drawChatBubble(sx,sy,chatBubble,pal.body||'#FF9EC4');
 }
-
-// ═══════════ RENDER ═══════════
 function render(){
-  const VW=W,VH=H;
-  const camX=Math.max(0,Math.min(W-VW,player.x-VW/2)),camY=Math.max(0,Math.min(H-VH,player.y-VH/2));
-  ctx.clearRect(0,0,VW,VH);
-  if(!allLoaded){ctx.fillStyle='#1a1a2e';ctx.fillRect(0,0,VW,VH);ctx.fillStyle='#FF9EC4';ctx.font='bold 14px "Nanum Gothic",sans-serif';ctx.textAlign='center';ctx.fillText('🌸 로딩 중... '+loadCount+'/2',VW/2,VH/2);ctx.textAlign='start';return;}
+  if(!ctx)return;
+  ctx.clearRect(0,0,MAP_W,MAP_H);
+  if(!allLoaded){ctx.fillStyle='#1a1a2e';ctx.fillRect(0,0,MAP_W,MAP_H);ctx.fillStyle='#FF9EC4';ctx.font='bold 14px "Nanum Gothic",sans-serif';ctx.textAlign='center';ctx.fillText('🌸 로딩 중... '+loadCount+'/2',MAP_W/2,MAP_H/2);ctx.textAlign='start';return;}
+  const camX=Math.max(0,Math.min(MAP_W-MAP_W,player.x-MAP_W/2));
+  const camY=Math.max(0,Math.min(MAP_H-MAP_H,player.y-MAP_H/2));
   ctx.save();ctx.translate(-camX,-camY);
-  for(let ty=0;ty<ROWS;ty++)for(let tx=0;tx<COLS;tx++)drawTile(tx,ty);
+  drawBackground();
   const ents=[{...player,name:myName,palette:myPal,emote:myEmoteT>0?myEmote:null,chatBubble:myChatBubbleT>0?myChatBubble:null}];
   for(const id in others){const o=others[id];ents.push({x:o.rx||o.x,y:o.ry||o.y,dir:o.dir||2,moving:o.moving||false,name:o.name,palette:o.palette||PALETTES[0],emote:o.emoteT>0?o.emote:null,chatBubble:o.chatBubbleT>0?o.chatBubbleText:null});}
   ents.sort((a,b)=>a.y-b.y);
   ents.forEach(e=>drawAvatar(e.x,e.y,e.palette,e.dir,e.moving,tick,e.name,e.emote,e.chatBubble));
   ctx.restore();
-  document.getElementById('debug-info').textContent=`sprite:${framesReady?'✅':'❌'} tile:${imgTileset?.naturalWidth?'✅':'❌'}`;
+  document.getElementById('debug-info').textContent='bg:'+(imgBg?.naturalWidth?'✅':'❌')+' sprite:'+(framesReady?'✅':'❌')+' map:'+MAP_W+'x'+MAP_H;
 }
-
-// ═══════════ GAME LOOP ═══════════
 function gameLoop(){
   requestAnimationFrame(gameLoop);tick++;
-  const SP=1.8;let dx=0,dy=0;
+  const SP=2.5;let dx=0,dy=0;
   if(keys['ArrowUp']||keys['KeyW'])dy=-SP;if(keys['ArrowDown']||keys['KeyS'])dy=SP;
   if(keys['ArrowLeft']||keys['KeyA'])dx=-SP;if(keys['ArrowRight']||keys['KeyD'])dx=SP;
   dx+=joystick.dx*SP;dy+=joystick.dy*SP;
-  if(dx||dy){if(dx<0)player.dir=1;else if(dx>0)player.dir=3;else if(dy<0)player.dir=0;else player.dir=2;player.moving=true;let nx=player.x+dx,ny=player.y+dy;const tx=Math.floor(nx/TS),ty=Math.floor(ny/TS);if(!isSolid(tx,ty)){player.x=nx;player.y=ny;}else{if(!isSolid(Math.floor(nx/TS),Math.floor(player.y/TS)))player.x=nx;if(!isSolid(Math.floor(player.x/TS),Math.floor(ny/TS)))player.y=ny;}player.x=Math.max(TS,Math.min((COLS-1)*TS,player.x));player.y=Math.max(TS,Math.min((ROWS-1)*TS,player.y));}else player.moving=false;
+  if(dx||dy){if(dx<0)player.dir=1;else if(dx>0)player.dir=3;else if(dy<0)player.dir=0;else player.dir=2;player.moving=true;let nx=player.x+dx,ny=player.y+dy;nx=Math.max(20,Math.min(MAP_W-20,nx));ny=Math.max(20,Math.min(MAP_H-20,ny));player.x=nx;player.y=ny;}else player.moving=false;
   if(myEmoteT>0)myEmoteT--;else myEmote=null;
   if(myChatBubbleT>0)myChatBubbleT--;else myChatBubble=null;
   for(const id in others){const o=others[id];if(o.tx!==undefined){o.rx=o.rx||o.tx;o.ry=o.ry||o.ty;o.rx+=(o.tx-o.rx)*.2;o.ry+=(o.ty-o.ry)*.2;o.moving=Math.abs(o.tx-o.rx)>0.5||Math.abs(o.ty-o.ry)>0.5;}if(o.emoteT>0)o.emoteT--;if(o.chatBubbleT>0)o.chatBubbleT--;}
@@ -408,8 +316,6 @@ function gameLoop(){
   if(now-lastR>900){readAll();lastR=now;}
   render();
 }
-
-// ═══════════ UTILS ═══════════
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function timeAgo(ts){const s=Math.floor((Date.now()-ts)/1000);if(s<60)return'방금 전';if(s<3600)return Math.floor(s/60)+'분 전';if(s<86400)return Math.floor(s/3600)+'시간 전';return Math.floor(s/86400)+'일 전';}
 function quickLogin(){const n=localStorage.getItem('fam_name');if(n)document.getElementById('name-input').value=n;startGame();}
