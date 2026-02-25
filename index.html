@@ -451,7 +451,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nanum Gothic',sans
 const DB_URL = 'https://ourmetaverse-default-rtdb.firebaseio.com';
 
 // ─── Sunnyside GitHub Assets ───────────────────────────────
-const GH = 'https://raw.githubusercontent.com/hosuproduction-netizen/metaverse/main/';
+const GH = './';
 
 const PALETTES = [
   {name:'단발',  body:'#E63946', hair:'shorthair',  label:'🟥'},
@@ -957,7 +957,7 @@ function drawTile(tx,ty){
   else if(t===1){
     // Water - verified at (256,160), animate with (288,160)
     const wf=Math.floor(Date.now()/700)%2;
-    if(ok) ctx.drawImage(ts,256+wf*32,160,16,16,x,y,TS,TS);
+    if(ok) ctx.drawImage(ts,192+wf*16,304,16,16,x,y,TS,TS);
     else{ctx.fillStyle='#1DB4CE';ctx.fillRect(x,y,TS,TS);}
   }
   else if(t===3){
@@ -1054,43 +1054,58 @@ const CF_W=48, CF_H=48, CF_N=8;
 // Display size (scale up to fit our tile grid)
 const CD_W=TS*1.5|0, CD_H=TS*2|0;   // 48×64 display px
 
+// Offscreen canvas for black-key removal
+const _oc = document.createElement('canvas');
+_oc.width=CF_W; _oc.height=CF_H;
+const _ox = _oc.getContext('2d');
+
+function removeBlackBg(img, fx, flipX){
+  _oc.width=CF_W; _oc.height=CF_H;
+  _ox.clearRect(0,0,CF_W,CF_H);
+  if(flipX){
+    _ox.save();
+    _ox.translate(CF_W,0);
+    _ox.scale(-1,1);
+  }
+  _ox.drawImage(img, fx,0,CF_W,CF_H, 0,0,CF_W,CF_H);
+  if(flipX) _ox.restore();
+  // Remove near-black pixels (background color)
+  const id = _ox.getImageData(0,0,CF_W,CF_H);
+  const d = id.data;
+  for(let i=0;i<d.length;i+=4){
+    if(d[i]<30 && d[i+1]<30 && d[i+2]<30) d[i+3]=0;
+  }
+  _ox.putImageData(id,0,0);
+  return _oc;
+}
+
 function drawSpriteChar(sx,sy,pal,dir,moving,t){
   const base = IMGS['base'];
   const hair = IMGS['hair_'+(pal.hair||'shorthair')];
   if(!base||!base.complete||!base.naturalWidth) return false;
-  detectFrameSize();
 
-  // Frame: 0-7 while walking, 0 when idle
   const frame = moving ? Math.floor(t/5)%CF_N : 0;
   const fx = frame * CF_W;
+  const flipX = (dir===1);
 
   const dx = Math.round(sx - CD_W/2);
   const dy = Math.round(sy - CD_H);
 
   ctx.save();
-  // Flip horizontally for left direction (dir===1)
-  if(dir===1){
-    ctx.translate(dx+CD_W, dy);
-    ctx.scale(-1,1);
-    ctx.drawImage(base, fx,0,CF_W,CF_H, 0,0,CD_W,CD_H);
-    if(hair&&hair.complete&&hair.naturalWidth){
-      // Tint hair with palette body color
-      ctx.drawImage(hair, fx,0,CF_W,CF_H, 0,0,CD_W,CD_H);
-    }
-  } else {
-    ctx.drawImage(base, fx,0,CF_W,CF_H, dx,dy,CD_W,CD_H);
-    if(hair&&hair.complete&&hair.naturalWidth){
-      ctx.drawImage(hair, fx,0,CF_W,CF_H, dx,dy,CD_W,CD_H);
-    }
-  }
+  // Draw base body (black bg removed)
+  const baseCanvas = removeBlackBg(base, fx, flipX);
+  ctx.drawImage(baseCanvas, 0,0,CF_W,CF_H, dx,dy,CD_W,CD_H);
 
-  // Color tint overlay on hair using body color
+  // Draw hair layer with color tint
   if(hair&&hair.complete&&hair.naturalWidth){
+    const hairCanvas = removeBlackBg(hair, fx, flipX);
+    // Draw hair
+    ctx.drawImage(hairCanvas, 0,0,CF_W,CF_H, dx,dy,CD_W,CD_H);
+    // Tint hair with player color
     ctx.globalCompositeOperation='multiply';
     ctx.fillStyle=pal.body||'#E63946';
-    ctx.globalAlpha=0.45;
-    if(dir===1){ctx.fillRect(0,0,CD_W,CD_H);}
-    else{ctx.fillRect(dx,dy,CD_W,CD_H);}
+    ctx.globalAlpha=0.6;
+    ctx.drawImage(hairCanvas, 0,0,CF_W,CF_H, dx,dy,CD_W,CD_H);
     ctx.globalAlpha=1;
     ctx.globalCompositeOperation='source-over';
   }
